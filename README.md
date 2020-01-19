@@ -18,8 +18,8 @@ Each road intersection is used as a vertex, the edges between the road intersect
 
 ## Architecture
 #### Cluster / Grid
-The whole city is divided into several clusters or Grids, each cluster includes its own unique ID and several road intersections, and each cluster has an idle vehicle table to record the idle vehicles in the current time slot. In addition, each cluster has a vehicle arrival table to record vehicles that will arrive in the future.
-https://github.com/szlhl1040/Simulator/blob/master/CARnet%20clustering.png  
+The whole city is divided into several clusters or Grids, each cluster includes its own unique ID and several road intersections, and each cluster has an idle vehicle table to record the idle vehicles in the current time slot. In addition, each cluster has a vehicle arrival table to record vehicles that will arrive in the future.  
+szlhl1040/Simulator/blob/master/CARnet%20clustering.png  
 
 #### Vehicles
 Each vehicle is randomly assigned to any cluster. Each vehicle has a record of its current location and future destination. There is also an order set. When a vehicle transports passengers, the order is loaded into the order set of the vehicle. When Remove this order when it reaches its destination.
