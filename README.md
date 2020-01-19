@@ -12,23 +12,35 @@ At the end of the matching phase, you can use your own matching method to dispat
 - The order data used by the simulator comes from [Didi Chuxing](https://gaia.didichuxing.com)
 - The map data used by the simulator comes from [OpenStreetMap](https://www.openstreetmap.org)
 
-## ku
+## Prerequisites
 - **Python 3**
 - **NumPy**
 - **Pandas**
 - **Matplotlib**
 
 ## Run
-
+    cd ./Vehicles-Dispatch-Simulator/
+    python Demo_simulation.py 
 
 ## Architecture
 #### Cluster / Grid
 The whole city is divided into several clusters or Grids, each cluster includes its own unique ID and several road intersections, and each cluster has an idle vehicle table to record the idle vehicles in the current time slot. In addition, each cluster has a vehicle arrival table to record vehicles that will arrive in the future.  
+<br>
+- An example of dividing urban areas by clusters  
 ![](https://github.com/szlhl1040/Simulator/blob/master/CARnet%20clustering.png)
 
 #### Vehicles
 Each vehicle is randomly assigned to any cluster. Each vehicle has a record of its current location and future destination. There is also an order set. When a vehicle transports passengers, the order is loaded into the order set of the vehicle. When Remove this order when it reaches its destination.
 
 #### Orders
+The order is derived from [Didi Chuxing](https://gaia.didichuxing.com). You can download the complete dataset on its official website. Here, only one day of order data is provided as a test case.Each day contains more than 200,000 order records, each order records the time of occurrence, location of occurrence, and destination location, where the location of the order is bound to the nearest road intersection
 
+#### Match module
+Each matching module will match the orders that will occur within the current time slot. The matching module will find the nearest idle vehicles for each order. It can also enable the neighbor car search system to determine the search range according to the set search distance and the size of the grid. It use dfs to find the nearest idle vehicles in the area.
+
+#### Predictor
+We provide weather data corresponding to the order time, which can better serve the order distribution and quantity forecast. You can implement your own order forecasting method to provide efficient and accurate help for Dispatch method
+
+#### Dispatch module
+you can implement your own Dispatch method in Dispatch module to move idle vehicles in each cluster to other clusters
 
