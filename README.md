@@ -11,6 +11,7 @@ At the end of the matching phase, you can use your own matching method to dispat
 ## Data source
 - The order data used by the simulator comes from [Didi Chuxing](https://gaia.didichuxing.com)
 - The map data used by the simulator comes from [OpenStreetMap](https://www.openstreetmap.org)
+- The weather data used by the simulator comes from [China Meteorological Administration](http://www.cma.gov.cn/)
 
 ## Prerequisites
 - **Python 3**
@@ -38,7 +39,7 @@ The order is derived from [Didi Chuxing](https://gaia.didichuxing.com). You can 
 #### Match module
 Each matching module will match the orders that will occur within the current time slot. The matching module will find the nearest idle vehicles for each order. It can also enable the neighbor car search system to determine the search range according to the set search distance and the size of the grid. It use dfs to find the nearest idle vehicles in the area.
 
-#### Predictor
+#### Prediction module
 We provide weather data corresponding to the order time, which can better serve the order distribution and quantity forecast. You can implement your own order forecasting method to provide efficient and accurate help for Dispatch method
 
 #### Dispatch module
