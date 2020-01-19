@@ -20,8 +20,12 @@ At the end of the matching phase, you can use your own matching method to dispat
 - **Matplotlib**
 
 ## Run
+#### Run a simple simulation program:
+    
     cd ./Vehicles-Dispatch-Simulator/
-    python Demo_simulation.py 
+    python Demo_simulation.py  
+<br>    
+If you want to customize more functions, please enter the settings.py under the config folder to modify the parameters of the simulator. You can even adjust the size of the experimental area by entering latitude and longitude. The order, road network and grid division will be adaptive. Adjust to fit selected area
 
 ## Architecture
 #### Cluster / Grid
