@@ -304,7 +304,7 @@ class Simulation(object):
 
     def CreateAllInstantiate(self,OrderFileDate="1101"):
         print("Read all files")
-        self.Node,self.Path,self.NodeIDList,Orders,Vehicles,self.Map = ReadAllFiles(OrderFileDate)
+        self.Node,self.NodeIDList,Orders,Vehicles,self.Map = ReadAllFiles(OrderFileDate)
 
         if self.ClusterMode != "Grid":
             print("Create Clusters")
@@ -735,12 +735,12 @@ class Simulation(object):
                 if i == j:
                     continue
 
-                if ConnectionMap[i][j] <= 1000:
+                if ConnectionMap[i][j] <= 3000:
                     LX = [self.NodeID2NodesLocation[i][0],self.NodeID2NodesLocation[j][0]]
                     LY = [self.NodeID2NodesLocation[i][1],self.NodeID2NodesLocation[j][1]]
 
                     if self.NodeID2Cluseter[i] == self.NodeID2Cluseter[j]:
-                        plt.plot(LX,LY,c=ClusetersColor[self.NodeID2Cluseter[i].ID],linewidth=1.3,alpha = 0.8)
+                        plt.plot(LX,LY,c=ClusetersColor[self.NodeID2Cluseter[i].ID],linewidth=0.8,alpha = 0.5)
                     else:
                         plt.plot(LX,LY,c='grey',linewidth=0.5,alpha = 0.4)
 
@@ -768,7 +768,7 @@ class Simulation(object):
                 if i == j:
                     continue
 
-                if ConnectionMap[i][j] <= 1000:
+                if ConnectionMap[i][j] <= 3000:
                     LX = [self.NodeID2NodesLocation[i][0],self.NodeID2NodesLocation[j][0]]
                     LY = [self.NodeID2NodesLocation[i][1],self.NodeID2NodesLocation[j][1]]
 
