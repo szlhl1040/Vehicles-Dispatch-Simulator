@@ -101,14 +101,12 @@ def ReadDriver(input_file_path="./data/Drivers1101.csv"):
 
 def ReadAllFiles(OrderFileDate="1101"):
     NodePath = os.path.join(os.getcwd(),"data","Node.csv")
-    #PathPath = os.path.join(os.getcwd(),"data","Path.csv")
     NodeIDListPath = os.path.join(os.getcwd(),"data","NodeIDList.txt")
     OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
     VehiclesPath = os.path.join(os.getcwd(),"data","Drivers1101.csv")
     MapPath = os.path.join(os.getcwd(),"data","AccurateMap.csv")
 
     Node = ReadNode(NodePath)
-    #Path = ReadPath(PathPath)
     Path = None
     NodeIDList = ReadNodeIDList(NodeIDListPath)
     Orders = ReadOrder(OrdersPath)
