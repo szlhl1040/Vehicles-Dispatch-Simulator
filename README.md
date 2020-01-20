@@ -22,7 +22,11 @@ At the end of the matching phase, you can use your own matching method to dispat
 ## Run
 #### Run a simple simulation program:
     
-    cd ./Vehicles-Dispatch-Simulator/
+    cd ./Vehicles-Dispatch-Simulator/data  
+    unzip Map.zip  
+    unzip AdjacencyMap.zip  
+    unzip Order.zip  
+    cd..  
     python Demo_simulation.py    
 If you want to customize more functions, please enter the settings.py under the config folder to modify the parameters of the simulator. You can even adjust the size of the experimental area by entering latitude and longitude. The order, road network and grid division will be adaptive. Adjust to fit selected area
 
