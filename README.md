@@ -52,3 +52,15 @@ We provide weather data corresponding to the order time, which can better serve 
 #### Dispatch module
 you can implement your own Dispatch method in Dispatch module to move idle vehicles in each cluster to other clusters
 
+
+## Citation
+Please cite our work if you find it useful.
+```bibtex
+@InProceedings{Tian_2020_ECCV,
+author = {Zhidan Liu, Jiangzhou Li, Kaishun Wu},
+title = {Context-Aware Taxi Dispatching at City-Scale Using Deep Reinforcement Learning},
+booktitle = {IEEE Transactions on Intelligent Transportation Systems},
+month = {October},
+year = {2020}
+}
+```
