@@ -1,6 +1,6 @@
 # Vehicles-Dispatch-Simulator
 This simulator serves as the training and evaluation platform in the following work:  
-[Context-Aware Taxi Dispatching at City-Scale Using Deep Reinforcement Learning](https://github.com/szlhl1040/Simulator)  
+[Context-Aware Taxi Dispatching at City-Scale Using Deep Reinforcement Learning](http://liuzhidan.github.io/pdf/2020-TITS-COX.pdf)  
 
 ## Introduction
 This simulator is used to simulate urban vehicle traffic.  
@@ -56,7 +56,7 @@ you can implement your own Dispatch method in Dispatch module to move idle vehic
 ## Citation
 Please cite our work if you find it useful.
 ```bibtex
-@InProceedings{Tian_2020_ECCV,
+@article{Liu_2020_TITS,
 author = {Zhidan Liu, Jiangzhou Li, Kaishun Wu},
 title = {Context-Aware Taxi Dispatching at City-Scale Using Deep Reinforcement Learning},
 booktitle = {IEEE Transactions on Intelligent Transportation Systems},
