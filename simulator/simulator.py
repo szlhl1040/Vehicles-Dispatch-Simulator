@@ -64,7 +64,6 @@ class Simulation(object):
         self.Vehicles = None
         self.Map = None
         self.Node = None
-        self.Path = None
         self.NodeIDList = None
         self.NodeID2Cluseter = {}
         self.NodeID2NodesLocation = {}
@@ -518,13 +517,13 @@ class Simulation(object):
         for i in range(len(AllGrid)):
             print("Grid ID ",i,AllGrid[i])
             print(AllGrid[i].Neighbor)
-            self.PrintCluster(Cluster = AllGrid[i],random = False,show = False)
+            self.DrawOneCluster(Cluster = AllGrid[i],random = False,show = False)
             
             for j in AllGrid[i].Neighbor:
                 if j.ID == AllGrid[i].ID :
                     continue
                 print(j.ID)
-                self.PrintCluster(Cluster = j,random = True,show = False)
+                self.DrawOneCluster(Cluster = j,random = True,show = False)
             plt.xlim(104.007, 104.13)
             plt.ylim(30.6119, 30.7092)
             plt.show()
@@ -659,12 +658,12 @@ class Simulation(object):
         for i in range(len(Clusters)):
             print("Cluster ID ",i,Clusters[i])
             print(Clusters[i].Neighbor)
-            self.PrintCluster(Cluster = Clusters[i],random = False,show = False)
+            self.DrawOneCluster(Cluster = Clusters[i],random = False,show = False)
             for j in Clusters[i].Neighbor:
                 if j.ID == Clusters[i].ID :
                     continue
                 print(j.ID)
-                self.PrintCluster(Cluster = j,random = True,show = False)
+                self.DrawOneCluster(Cluster = j,random = True,show = False)
             plt.xlim(104.007, 104.13)
             plt.ylim(30.6119, 30.7092)
             plt.show()
@@ -779,18 +778,17 @@ class Simulation(object):
         plt.show()
         return
 
-    def DrawOneCluster(self,Cluster,random=True):
+    def DrawOneCluster(self,Cluster,random=True,show=False):
         randomc = self.randomcolor()
         for i in Cluster.Nodes:
             if random == True:
                 plt.scatter(i[1][0],i[1][1],s = 3, c=randomc,alpha = 0.5)
             else :
                 plt.scatter(i[1][0],i[1][1],s = 3, c='r',alpha = 0.5)
-        plt.xlim(self.MapWestBound , self.MapEastBound)
-        plt.ylim(self.MapSouthBound , self.MapNorthBound)
-        plt.title(str(Cluster.ID) + " Cluster")
-        plt.show()
-        return
+        if show == True:
+            plt.xlim(self.MapWestBound , self.MapEastBound)
+            plt.ylim(self.MapSouthBound , self.MapNorthBound)
+            plt.show()
 
     def DrawAllVehicles(self):
         for i in self.Clusters:
