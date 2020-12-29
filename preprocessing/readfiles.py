@@ -107,12 +107,11 @@ def ReadAllFiles(OrderFileDate="1101"):
     MapPath = os.path.join(os.getcwd(),"data","AccurateMap.csv")
 
     Node = ReadNode(NodePath)
-    Path = None
     NodeIDList = ReadNodeIDList(NodeIDListPath)
     Orders = ReadOrder(OrdersPath)
     Vehicles = ReadDriver(VehiclesPath)
     Map = ReadCostMap(MapPath)
-    return Node,Path,NodeIDList,Orders,Vehicles,Map
+    return Node,NodeIDList,Orders,Vehicles,Map
 
 def ReadOrdersVehiclesFiles(OrderFileDate="1101"):
     OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
