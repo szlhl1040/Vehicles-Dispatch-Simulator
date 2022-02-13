@@ -95,14 +95,15 @@ def ReadDriver(input_file_path="./data/Drivers0601.csv"):
     for chunk in reader:
         Driver.append(chunk)
     Driver = pd.concat(Driver)
-    Driver = Driver.drop(columns=['Start_time'])
+    if "Start_time" in Driver.columns:
+        Driver = Driver.drop(columns=['Start_time'])
     Driver = Driver.values
     return Driver
 
 def ReadAllFiles(OrderFileDate="0601"):
-    NodePath = os.path.join(os.getcwd(),"data","Node.csv")
-    NodeIDListPath = os.path.join(os.getcwd(),"data","NodeIDList.txt")
-    OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
+    NodePath = os.path.join(os.getcwd(),"data","Sampled_Node.csv")
+    NodeIDListPath = os.path.join(os.getcwd(),"data","Sampled_NodeIDList.txt")
+    OrdersPath = os.path.join(os.getcwd(), "data", "Order", "modified", "train", "order_2016" + OrderFileDate + ".csv")
     VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
     MapPath = os.path.join(os.getcwd(),"data","AccurateMap.csv")
 
@@ -114,7 +115,7 @@ def ReadAllFiles(OrderFileDate="0601"):
     return Node,NodeIDList,Orders,Vehicles,Map
 
 def ReadOrdersVehiclesFiles(OrderFileDate="0601"):
-    OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
+    OrdersPath = os.path.join(os.getcwd(),"data", "Order", "modified", "train", "order_2016" + OrderFileDate + ".csv")
     VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
     Orders = ReadOrder(OrdersPath)
     Vehicles = ReadDriver(VehiclesPath)

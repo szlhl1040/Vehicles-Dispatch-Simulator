@@ -10,11 +10,12 @@ import pandas as pd
 import numpy as np
 import logging
 import datetime as dt
-from math import radians, cos, sin, asin, sqrt
 from datetime import datetime,timedelta
 from objects.objects import Cluster,Order,Vehicle,Transition,Grid
 from config.setting import *
 from preprocessing.readfiles import *
+from util import haversine
+from tqdm import tqdm
 ###########################################################################
 
 DATA_PATH = "./data/Order/modified"
@@ -42,10 +43,19 @@ class Simulation(object):
     clusters that require more vehicles to meet future order requirements.
     """
 
-    def __init__(self,ClusterMode,DemandPredictionMode,
-                DispatchMode,VehiclesNumber,TimePeriods,LocalRegionBound,
-                SideLengthMeter,VehiclesServiceMeter,
-                NeighborCanServer,FocusOnLocalRegion):
+    def __init__(
+        self,
+        ClusterMode,
+        DemandPredictionMode,
+        DispatchMode,
+        VehiclesNumber,
+        TimePeriods,
+        LocalRegionBound,
+        SideLengthMeter,
+        VehiclesServiceMeter,
+        NeighborCanServer,
+        FocusOnLocalRegion
+    ):
 
         #Component
         self.DispatchModule = None
@@ -271,20 +281,6 @@ class Simulation(object):
     def RoadCost(self,start,end):
         return int(self.Map[start][end])
 
-    def haversine(self, lon1, lat1, lon2, lat2):
-        """
-        Calculate the great circle distance between two points 
-        on the earth (specified in decimal degrees)
-        """
-        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-        #haversine
-        dlon = lon2 - lon1 
-        dlat = lat2 - lat1 
-        a = np.sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-        c = 2 * asin(sqrt(a)) 
-        r = 6371
-        return c * r * 1000
-
     def CalculateTheScaleOfDivision(self):
         EastWestSpan = self.LocalRegionBound[1] - self.LocalRegionBound[0]
         NorthSouthSpan = self.LocalRegionBound[3] - self.LocalRegionBound[2]
@@ -292,8 +288,8 @@ class Simulation(object):
         AverageLongitude = (self.MapEastBound-self.MapWestBound)/2
         AverageLatitude = (self.MapNorthBound-self.MapSouthBound)/2
 
-        self.NumGrideWidth = int(self.haversine(self.MapWestBound,AverageLatitude,self.MapEastBound,AverageLatitude) / self.SideLengthMeter + 1)
-        self.NumGrideHeight = int(self.haversine(AverageLongitude,self.MapSouthBound,AverageLongitude,self.MapNorthBound) / self.SideLengthMeter + 1)
+        self.NumGrideWidth = int(haversine(self.MapWestBound,AverageLatitude,self.MapEastBound,AverageLatitude) / self.SideLengthMeter + 1)
+        self.NumGrideHeight = int(haversine(AverageLongitude,self.MapSouthBound,AverageLongitude,self.MapNorthBound) / self.SideLengthMeter + 1)
 
         self.NeighborServerDeepLimit = int((self.VehiclesServiceMeter - (0.5 * self.SideLengthMeter))//self.SideLengthMeter)
         self.ClustersNumber = self.NumGrideWidth * self.NumGrideHeight
@@ -408,9 +404,9 @@ class Simulation(object):
 
             NodeLocation = np.array(NodeLocation)
         #--------------------------------------------------
-
+        print("Create NodeSet")
         NodeSet = {}
-        for i in range(len(NodeID)):
+        for i in tqdm(range(len(NodeID))):
             NodeSet[(NodeLocation[i][0],NodeLocation[i][1])] = self.NodeIDList.index(NodeID[i])
 
         #Build each grid
@@ -427,7 +423,7 @@ class Simulation(object):
 
         AllGrid = [Grid(i,[],[],0,[],{},[]) for i in range(NumGride)]
 
-        for key,value in NodeSet.items():
+        for key,value in tqdm(NodeSet.items()):
             NowGridWidthNum = None
             NowGridHeightNum = None
 
@@ -439,7 +435,7 @@ class Simulation(object):
                     LeftBound = (self.MapWestBound + i * IntervalWidth)
                     RightBound = (self.MapWestBound + (i+1) * IntervalWidth)
 
-                if key[0] > LeftBound and key[0] < RightBound:
+                if key[0] > LeftBound and key[0] <= RightBound:
                     NowGridWidthNum = i
                     break
 
@@ -451,7 +447,7 @@ class Simulation(object):
                     DownBound = (self.MapSouthBound + i * IntervalHeight)
                     UpBound = (self.MapSouthBound + (i+1) * IntervalHeight)
 
-                if key[1] > DownBound and key[1] < UpBound:
+                if key[1] > DownBound and key[1] <= UpBound:
                     NowGridHeightNum = i
                     break
 
