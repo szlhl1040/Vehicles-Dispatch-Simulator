@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 import random
 import re
 import copy
@@ -15,6 +16,12 @@ from objects.objects import Cluster,Order,Vehicle,Transition,Grid
 from config.setting import *
 from preprocessing.readfiles import *
 ###########################################################################
+
+DATA_PATH = "./data/Order/modified"
+TRAIN = "train"
+TEST = "test"
+
+base_data_path = Path(DATA_PATH)
 
 class Simulation(object):
     """
@@ -75,6 +82,7 @@ class Simulation(object):
         self.MapNorthBound = LocalRegionBound[3]
 
         #Weather data
+        # TODO: MUST CHANGE
         #------------------------------------------
         self.WeatherType = np.array([2,1,1,1,1,0,1,2,1,1,3,3,3,3,3,
                                      3,3,0,0,0,2,1,1,1,1,0,1,0,1,1,
@@ -127,7 +135,7 @@ class Simulation(object):
         return
 
 
-    def Reload(self,OrderFileDate="1101"):
+    def Reload(self,OrderFileDate="0601"):
         """
         Read a new order into the simulator and 
         reset some variables of the simulator
@@ -156,15 +164,15 @@ class Simulation(object):
         #read orders
         #-----------------------------------------
         if self.FocusOnLocalRegion == False:
-            Orders = ReadOrder(input_file_path="./data/test/order_2016"+ str(OrderFileDate) + ".csv")
+            Orders = ReadOrder(input_file_path=base_data_path / TRAIN / f"order_2016{str(OrderFileDate)}.csv")
             self.Orders = [Order(i[0],i[1],self.NodeIDList.index(i[2]),self.NodeIDList.index(i[3]),i[1]+PICKUPTIMEWINDOW,None,None,None) for i in Orders]
         else:
-            SaveLocalRegionBoundOrdersPath = "./data/test/order_2016" + str(self.LocalRegionBound) + str(OrderFileDate) + ".csv"
+            SaveLocalRegionBoundOrdersPath = base_data_path / TRAIN / f"order_2016{str(OrderFileDate)}.csv"
             if os.path.exists(SaveLocalRegionBoundOrdersPath):
                 Orders = ReadResetOrder(input_file_path=SaveLocalRegionBoundOrdersPath)
                 self.Orders = [Order(i[0],string_pdTimestamp(i[1]),self.NodeIDList.index(i[2]),self.NodeIDList.index(i[3]),string_pdTimestamp(i[1])+PICKUPTIMEWINDOW,None,None,None) for i in Orders]
             else:
-                Orders = ReadOrder(input_file_path="./data/test/order_2016"+ str(OrderFileDate) + ".csv")
+                Orders = ReadOrder(input_file_path=base_data_path / TRAIN / f"order_2016{str(OrderFileDate)}.csv")
                 self.Orders = [Order(i[0],i[1],self.NodeIDList.index(i[2]),self.NodeIDList.index(i[3]),i[1]+PICKUPTIMEWINDOW,None,None,None) for i in Orders]
                 #Limit order generation area
                 #-------------------------------
@@ -300,7 +308,7 @@ class Simulation(object):
         print("----------------------------")
         return
 
-    def CreateAllInstantiate(self,OrderFileDate="1101"):
+    def CreateAllInstantiate(self,OrderFileDate="0601"):
         print("Read all files")
         self.Node,self.NodeIDList,Orders,Vehicles,self.Map = ReadAllFiles(OrderFileDate)
 

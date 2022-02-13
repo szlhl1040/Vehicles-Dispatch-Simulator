@@ -89,7 +89,7 @@ def ReadResetOrder(input_file_path):
     Order = Order.values
     return Order
 
-def ReadDriver(input_file_path="./data/Drivers1101.csv"):
+def ReadDriver(input_file_path="./data/Drivers0601.csv"):
     reader = pd.read_csv(input_file_path,chunksize = 1000)
     Driver = []
     for chunk in reader:
@@ -99,11 +99,11 @@ def ReadDriver(input_file_path="./data/Drivers1101.csv"):
     Driver = Driver.values
     return Driver
 
-def ReadAllFiles(OrderFileDate="1101"):
+def ReadAllFiles(OrderFileDate="0601"):
     NodePath = os.path.join(os.getcwd(),"data","Node.csv")
     NodeIDListPath = os.path.join(os.getcwd(),"data","NodeIDList.txt")
     OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
-    VehiclesPath = os.path.join(os.getcwd(),"data","Drivers1101.csv")
+    VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
     MapPath = os.path.join(os.getcwd(),"data","AccurateMap.csv")
 
     Node = ReadNode(NodePath)
@@ -113,9 +113,9 @@ def ReadAllFiles(OrderFileDate="1101"):
     Map = ReadCostMap(MapPath)
     return Node,NodeIDList,Orders,Vehicles,Map
 
-def ReadOrdersVehiclesFiles(OrderFileDate="1101"):
+def ReadOrdersVehiclesFiles(OrderFileDate="0601"):
     OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
-    VehiclesPath = os.path.join(os.getcwd(),"data","Drivers1101.csv")
+    VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
     Orders = ReadOrder(OrdersPath)
     Vehicles = ReadDriver(VehiclesPath)
     return Orders,Vehicles
