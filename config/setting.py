@@ -12,10 +12,10 @@ NeighborCanServer = False
 
 #You can adjust the size of the experimental area by entering latitude and longitude.
 #The order, road network and grid division will be adaptive. Adjust to fit selected area
-FocusOnLocalRegion = False
-LocalRegionBound = (-74.02,-73.9,40.70,40.84)
+FocusOnLocalRegion = True
+LocalRegionBound = (-74.020,-73.950,40.700,40.770)
 if FocusOnLocalRegion == False:
-    LocalRegionBound = (-74.02,-73.9,40.70,40.84)
+    LocalRegionBound = (-74.020,-73.906,40.70,40.785)
 
 
 

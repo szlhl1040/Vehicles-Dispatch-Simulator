@@ -101,8 +101,8 @@ def ReadDriver(input_file_path="./data/Drivers0601.csv"):
     return Driver
 
 def ReadAllFiles(OrderFileDate="0601"):
-    NodePath = os.path.join(os.getcwd(),"data","Sampled_Node.csv")
-    NodeIDListPath = os.path.join(os.getcwd(),"data","Sampled_NodeIDList.txt")
+    NodePath = os.path.join(os.getcwd(),"data","Node.csv")
+    NodeIDListPath = os.path.join(os.getcwd(),"data","NodeIDList.txt")
     OrdersPath = os.path.join(os.getcwd(), "data", "Order", "modified", "train", "order_2016" + OrderFileDate + ".csv")
     VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
     MapPath = os.path.join(os.getcwd(),"data","AccurateMap.csv")
