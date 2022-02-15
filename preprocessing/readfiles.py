@@ -77,6 +77,7 @@ def ReadOrder(input_file_path):
     Order["Start_time"] = Order["Start_time"].apply(timestamp_datetime)
     Order = Order.sort_values(by = "Start_time")
     Order["ID"] = range(0,Order.shape[0])
+    Order = Order[["ID", "Start_time", "NodeS", "NodeE"]]
     Order = Order.values
     return Order
 

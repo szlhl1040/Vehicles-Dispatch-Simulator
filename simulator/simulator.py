@@ -404,9 +404,8 @@ class Simulation(object):
 
             NodeLocation = np.array(NodeLocation)
         #--------------------------------------------------
-        print("Create NodeSet")
         NodeSet = {}
-        for i in tqdm(range(len(NodeID))):
+        for i in range(len(NodeID)):
             NodeSet[(NodeLocation[i][0],NodeLocation[i][1])] = self.NodeIDList.index(NodeID[i])
 
         #Build each grid
@@ -423,7 +422,7 @@ class Simulation(object):
 
         AllGrid = [Grid(i,[],[],0,[],{},[]) for i in range(NumGride)]
 
-        for key,value in tqdm(NodeSet.items()):
+        for key,value in NodeSet.items():
             NowGridWidthNum = None
             NowGridHeightNum = None
 
