@@ -319,7 +319,7 @@ class Simulation(object):
         print("----------------------------")
         return
 
-    def CreateAllInstantiate(self,OrderFileDate="0601"):
+    def create_all_instantiate(self,OrderFileDate="0601"):
         print("Read all files")
         self.Node,self.NodeIDList,Orders,Vehicles,self.Map = ReadAllFiles(OrderFileDate)
 
@@ -1051,7 +1051,7 @@ class Simulation(object):
     def LearningFunction(self):
         return
 
-    def SimCity(self):
+    def simulate(self):
         self.RealExpTime = self.Orders[0].ReleasTime - self.time_periods
 
         #To complete running orders
@@ -1152,17 +1152,17 @@ if __name__ == '__main__':
     DispatchMode = "Simulation"
     DemandPredictionMode = "None"
     ClusterMode = "Grid"
-    EXPSIM = Simulation(
-                        cluster_mode = ClusterMode,
-                        demand_prediction_mode = DemandPredictionMode,
-                        dispatch_mode = DispatchMode,
-                        vehicles_number = VehiclesNumber,
-                        time_periods = TIMESTEP,
-                        local_region_bound = LocalRegionBound,
-                        side_length_meter = SideLengthMeter,
-                        vehicles_server_meter = VehiclesServiceMeter,
-                        neighbor_can_server = NeighborCanServer,
-                        focus_on_local_region = FocusOnLocalRegion,
-                        )
-    EXPSIM.CreateAllInstantiate()
-    EXPSIM.SimCity()
+    simulator = Simulation(
+        cluster_mode=ClusterMode,
+        demand_prediction_mode=DemandPredictionMode,
+        dispatch_mode=DispatchMode,
+        vehicles_number=VehiclesNumber,
+        time_periods=TIMESTEP,
+        local_region_bound=LocalRegionBound,
+        side_length_meter=SideLengthMeter,
+        vehicles_server_meter=VehiclesServiceMeter,
+        neighbor_can_server=NeighborCanServer,
+        focus_on_local_region=FocusOnLocalRegion,
+    )
+    simulator.create_all_instantiate()
+    simulator.simulate()

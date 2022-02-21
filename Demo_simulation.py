@@ -14,7 +14,7 @@ from config.setting import (
 from simulator.simulator import Simulation
 
 if __name__ == "__main__":
-    EXPSIM = Simulation(
+    simulator = Simulation(
         cluster_mode = ClusterMode,
         demand_prediction_mode = DemandPredictionMode,
         dispatch_mode = DispatchMode,
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         focus_on_local_region = FocusOnLocalRegion,
     )
 
-    EXPSIM.CreateAllInstantiate()
-    EXPSIM.SimCity()
-    EXPSIM.Reload("0602")
-    EXPSIM.SimCity()
+    simulator.create_all_instantiate()
+    simulator.simulate()
+    simulator.Reload("0602")
+    simulator.simulate()
