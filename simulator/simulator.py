@@ -47,8 +47,8 @@ class Simulation(object):
         self,
         cluster_mode,
         demand_prediction_mode,
-        DispatchMode,
-        VehiclesNumber,
+        dispatch_mode,
+        vehicles_number,
         TimePeriods,
         LocalRegionBound,
         SideLengthMeter,
@@ -115,8 +115,8 @@ class Simulation(object):
 
         #Input parameters
         self.cluster_mode = cluster_mode
-        self.dispatch_mode = DispatchMode
-        self.vehicles_number = VehiclesNumber
+        self.dispatch_mode = dispatch_mode
+        self.vehicles_number = vehicles_number
         self.time_periods = TimePeriods 
         self.local_region_bound = LocalRegionBound
         self.side_length_meter = SideLengthMeter
@@ -1142,8 +1142,8 @@ if __name__ == '__main__':
     EXPSIM = Simulation(
                         cluster_mode = ClusterMode,
                         demand_prediction_mode = DemandPredictionMode,
-                        DispatchMode = DispatchMode,
-                        VehiclesNumber = VehiclesNumber,
+                        dispatch_mode = DispatchMode,
+                        vehicles_number = VehiclesNumber,
                         TimePeriods = TIMESTEP,
                         LocalRegionBound = LocalRegionBound,
                         SideLengthMeter = SideLengthMeter,

@@ -6,8 +6,8 @@ if __name__ == "__main__":
     EXPSIM = Simulation(
         cluster_mode = ClusterMode,
         demand_prediction_mode = DemandPredictionMode,
-        DispatchMode = DispatchMode,
-        VehiclesNumber = VehiclesNumber,
+        dispatch_mode = DispatchMode,
+        vehicles_number = VehiclesNumber,
         TimePeriods = TIMESTEP,
         LocalRegionBound = LocalRegionBound,
         SideLengthMeter = SideLengthMeter,
