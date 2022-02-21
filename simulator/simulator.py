@@ -970,7 +970,7 @@ class Simulation(object):
 
                     self.totally_wait_time += self.road_cost(NowVehicle.LocationNode,self.now_order.PickupPoint)
 
-                    ScheduleCost = self.road_cost(NowVehicle.LocationNode,self.now_order.PickupPoint) + self.RoadCost(self.now_order.PickupPoint,self.now_order.DeliveryPoint)
+                    ScheduleCost = self.road_cost(NowVehicle.LocationNode,self.now_order.PickupPoint) + self.road_cost(self.now_order.PickupPoint,self.now_order.DeliveryPoint)
 
                     #Add a destination to the current vehicle
                     NowVehicle.DeliveryPoint = self.now_order.DeliveryPoint
