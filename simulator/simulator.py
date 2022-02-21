@@ -65,7 +65,7 @@ class Simulation(object):
         time_periods,
         local_region_bound,
         side_length_meter,
-        VehiclesServiceMeter,
+        vehicles_server_meter,
         NeighborCanServer,
         FocusOnLocalRegion
     ):
@@ -1160,7 +1160,7 @@ if __name__ == '__main__':
                         time_periods = TIMESTEP,
                         local_region_bound = LocalRegionBound,
                         side_length_meter = SideLengthMeter,
-                        VehiclesServiceMeter = VehiclesServiceMeter,
+                        vehicles_server_meter = VehiclesServiceMeter,
                         NeighborCanServer = NeighborCanServer,
                         FocusOnLocalRegion = FocusOnLocalRegion,
                         )
