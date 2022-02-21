@@ -46,7 +46,7 @@ class Simulation(object):
     def __init__(
         self,
         cluster_mode,
-        DemandPredictionMode,
+        demand_prediction_mode,
         DispatchMode,
         VehiclesNumber,
         TimePeriods,
@@ -115,20 +115,20 @@ class Simulation(object):
 
         #Input parameters
         self.cluster_mode = cluster_mode
-        self.DispatchMode = DispatchMode
-        self.VehiclesNumber = VehiclesNumber
-        self.TimePeriods = TimePeriods 
-        self.LocalRegionBound = LocalRegionBound
-        self.SideLengthMeter = SideLengthMeter
-        self.VehiclesServiceMeter = VehiclesServiceMeter
+        self.dispatch_mode = DispatchMode
+        self.vehicles_number = VehiclesNumber
+        self.time_periods = TimePeriods 
+        self.local_region_bound = LocalRegionBound
+        self.side_length_meter = SideLengthMeter
+        self.vehicle_service_meter = VehiclesServiceMeter
         self.ClustersNumber = None
         self.NumGrideWidth = None
         self.NumGrideHeight = None
         self.NeighborServerDeepLimit = None
 
         #Control variable
-        self.NeighborCanServer = NeighborCanServer
-        self.FocusOnLocalRegion = FocusOnLocalRegion
+        self.neighbor_can_server = NeighborCanServer
+        self.focus_on_local_region = FocusOnLocalRegion
 
         #Process variable
         self.RealExpTime = None
@@ -139,7 +139,7 @@ class Simulation(object):
         self.CalculateTheScaleOfDivision()
 
         #Demand predictor variable
-        self.DemandPredictionMode = DemandPredictionMode
+        self.demand_prediction_mode = demand_prediction_mode
         self.SupplyExpect = None
 
         return
@@ -173,7 +173,7 @@ class Simulation(object):
 
         #read orders
         #-----------------------------------------
-        # if self.FocusOnLocalRegion == False:
+        # if self.focus_on_local_region == False:
         if True:
             Orders = ReadOrder(input_file_path=base_data_path / TRAIN / f"order_2016{str(OrderFileDate)}.csv")
             self.Orders = [Order(i[0],i[1],self.NodeIDList.index(i[2]),self.NodeIDList.index(i[3]),i[1]+PICKUPTIMEWINDOW,None,None,None) for i in Orders]
@@ -284,22 +284,22 @@ class Simulation(object):
         return int(self.Map[start][end])
 
     def CalculateTheScaleOfDivision(self):
-        EastWestSpan = self.LocalRegionBound[1] - self.LocalRegionBound[0]
-        NorthSouthSpan = self.LocalRegionBound[3] - self.LocalRegionBound[2]
+        EastWestSpan = self.local_region_bound[1] - self.local_region_bound[0]
+        NorthSouthSpan = self.local_region_bound[3] - self.local_region_bound[2]
 
         AverageLongitude = (self.MapEastBound-self.MapWestBound)/2
         AverageLatitude = (self.MapNorthBound-self.MapSouthBound)/2
 
-        self.NumGrideWidth = int(haversine(self.MapWestBound,AverageLatitude,self.MapEastBound,AverageLatitude) / self.SideLengthMeter + 1)
-        self.NumGrideHeight = int(haversine(AverageLongitude,self.MapSouthBound,AverageLongitude,self.MapNorthBound) / self.SideLengthMeter + 1)
+        self.NumGrideWidth = int(haversine(self.MapWestBound,AverageLatitude,self.MapEastBound,AverageLatitude) / self.side_length_meter + 1)
+        self.NumGrideHeight = int(haversine(AverageLongitude,self.MapSouthBound,AverageLongitude,self.MapNorthBound) / self.side_length_meter + 1)
 
-        self.NeighborServerDeepLimit = int((self.VehiclesServiceMeter - (0.5 * self.SideLengthMeter))//self.SideLengthMeter)
+        self.NeighborServerDeepLimit = int((self.vehicle_service_meter - (0.5 * self.side_length_meter))//self.side_length_meter)
         self.ClustersNumber = self.NumGrideWidth * self.NumGrideHeight
 
         print("----------------------------")
-        print("Map extent",self.LocalRegionBound)
-        print("The width of each grid",self.SideLengthMeter,"meters")
-        print("Vehicle service range",self.VehiclesServiceMeter,"meters")
+        print("Map extent",self.local_region_bound)
+        print("The width of each grid",self.side_length_meter,"meters")
+        print("Vehicle service range",self.vehicle_service_meter,"meters")
         print("Number of grids in east-west direction",self.NumGrideWidth)
         print("Number of grids in north-south direction",self.NumGrideHeight)
         print("Number of grids",self.ClustersNumber)
@@ -332,7 +332,7 @@ class Simulation(object):
 
         #Limit order generation area
         #-------------------------------
-        if self.FocusOnLocalRegion == True:
+        if self.focus_on_local_region == True:
             print("Remove out-of-bounds Orders")
             for i in self.Orders[:]:
                 if self.IsOrderInLimitRegion(i) == False:
@@ -350,7 +350,7 @@ class Simulation(object):
 
         #Select number of vehicles
         #-------------------------------
-        Vehicles = Vehicles[:self.VehiclesNumber]
+        Vehicles = Vehicles[:self.vehicles_number]
         #-------------------------------
 
         print("Create Vehicles set")
@@ -368,9 +368,9 @@ class Simulation(object):
         return True
 
     def IsNodeInLimitRegion(self,TempNodeList):
-        if TempNodeList[0][0] < self.LocalRegionBound[0] or TempNodeList[0][0] > self.LocalRegionBound[1]:
+        if TempNodeList[0][0] < self.local_region_bound[0] or TempNodeList[0][0] > self.local_region_bound[1]:
             return False
-        elif TempNodeList[0][1] < self.LocalRegionBound[2] or TempNodeList[0][1] > self.LocalRegionBound[3]:
+        elif TempNodeList[0][1] < self.local_region_bound[2] or TempNodeList[0][1] > self.local_region_bound[3]:
             return False
 
         return True
@@ -385,7 +385,7 @@ class Simulation(object):
 
         #Select small area simulation
         #----------------------------------------------------
-        if self.FocusOnLocalRegion == True:
+        if self.focus_on_local_region == True:
             NodeLocation = NodeLocation.tolist()
             NodeID = NodeID.tolist()
 
@@ -412,9 +412,9 @@ class Simulation(object):
 
         #Build each grid
         #------------------------------------------------------
-        if self.FocusOnLocalRegion == True:
-            TotalWidth = self.LocalRegionBound[1] - self.LocalRegionBound[0]
-            TotalHeight = self.LocalRegionBound[3] - self.LocalRegionBound[2]
+        if self.focus_on_local_region == True:
+            TotalWidth = self.local_region_bound[1] - self.local_region_bound[0]
+            TotalHeight = self.local_region_bound[3] - self.local_region_bound[2]
         else:
             TotalWidth = self.MapEastBound - self.MapWestBound 
             TotalHeight = self.MapNorthBound - self.MapSouthBound
@@ -429,9 +429,9 @@ class Simulation(object):
             NowGridHeightNum = None
 
             for i in range(self.NumGrideWidth):
-                if self.FocusOnLocalRegion == True:
-                    LeftBound = (self.LocalRegionBound[0] + i * IntervalWidth)
-                    RightBound = (self.LocalRegionBound[0] + (i+1) * IntervalWidth)
+                if self.focus_on_local_region == True:
+                    LeftBound = (self.local_region_bound[0] + i * IntervalWidth)
+                    RightBound = (self.local_region_bound[0] + (i+1) * IntervalWidth)
                 else:
                     LeftBound = (self.MapWestBound + i * IntervalWidth)
                     RightBound = (self.MapWestBound + (i+1) * IntervalWidth)
@@ -441,9 +441,9 @@ class Simulation(object):
                     break
 
             for i in range(self.NumGrideHeight):
-                if self.FocusOnLocalRegion == True:
-                    DownBound = (self.LocalRegionBound[2] + i * IntervalHeight)
-                    UpBound = (self.LocalRegionBound[2] + (i+1) * IntervalHeight)
+                if self.focus_on_local_region == True:
+                    DownBound = (self.local_region_bound[2] + i * IntervalHeight)
+                    UpBound = (self.local_region_bound[2] + (i+1) * IntervalHeight)
                 else:
                     DownBound = (self.MapSouthBound + i * IntervalHeight)
                     UpBound = (self.MapSouthBound + (i+1) * IntervalHeight)
@@ -544,7 +544,7 @@ class Simulation(object):
 
         #Set Nodes In Limit Region
         #----------------------------------------
-        if self.FocusOnLocalRegion == True:
+        if self.focus_on_local_region == True:
             print("Remove out-of-bounds Nodes")
             NodeLocation = NodeLocation.tolist()
             NodeID = NodeID.tolist()
@@ -574,7 +574,7 @@ class Simulation(object):
 
         Clusters=[Cluster(i,[],[],0,[],{},[]) for i in range(self.ClustersNumber)]
 
-        ClusterPath = './data/'+str(self.LocalRegionBound)+str(self.ClustersNumber)+str(self.cluster_mode)+'Clusters.csv'
+        ClusterPath = './data/'+str(self.local_region_bound)+str(self.ClustersNumber)+str(self.cluster_mode)+'Clusters.csv'
         if os.path.exists(ClusterPath):
             reader = pd.read_csv(ClusterPath,chunksize = 1000)
             label_pred = []
@@ -594,7 +594,7 @@ class Simulation(object):
             for j in range(len(temp)):
                 Clusters[i].Nodes.append((self.NodeIDList.index(N[(temp[j,0],temp[j,1])]),(temp[j,0],temp[j,1])))
 
-        SaveClusterNeighborPath = './data/'+str(self.LocalRegionBound)+str(self.ClustersNumber)+str(self.cluster_mode)+'Neighbor.csv'
+        SaveClusterNeighborPath = './data/'+str(self.local_region_bound)+str(self.ClustersNumber)+str(self.cluster_mode)+'Neighbor.csv'
 
         if not os.path.exists(SaveClusterNeighborPath):
             print("Computing Neighbor relationships between clusters")
@@ -679,15 +679,15 @@ class Simulation(object):
 
 
     def LoadDemandPrediction(self):
-        if self.DemandPredictionMode == 'None' or self.DemandPredictionMode == "Training":
+        if self.demand_prediction_mode == 'None' or self.demand_prediction_mode == "Training":
             self.DemandPredictorModule = None
             return
 
-        elif self.DemandPredictionMode == 'HA':
+        elif self.demand_prediction_mode == 'HA':
             self.DemandPredictorModule = HAPredictionModel()
-            DemandPredictionModelPath = "./model/"+str(self.DemandPredictionMode)+"PredictionModel"+str(self.cluster_mode)+str(self.SideLengthMeter)+str(self.LocalRegionBound)+".csv"
+            DemandPredictionModelPath = "./model/"+str(self.demand_prediction_mode)+"PredictionModel"+str(self.cluster_mode)+str(self.side_length_meter)+str(self.local_region_bound)+".csv"
         #You can extend the predictor here
-        #elif self.DemandPredictionMode == 'Your predictor name':
+        #elif self.demand_prediction_mode == 'Your predictor name':
         else:
             raise Exception('DemandPredictionMode Name error')
 
@@ -891,7 +891,7 @@ class Simulation(object):
         for i in self.Clusters:
             for key,value in list(i.VehiclesArrivetime.items()):
                 #key = Vehicle ; value = Arrivetime
-                if value <= self.RealExpTime + self.TimePeriods and len(key.Orders)>0:
+                if value <= self.RealExpTime + self.time_periods and len(key.Orders)>0:
                     self.SupplyExpect[i.ID] += 1
         return 
 
@@ -914,7 +914,7 @@ class Simulation(object):
         for i in self.Clusters:
             i.PerMatchIdleVehicles = len(i.IdleVehicles)
 
-        while self.NowOrder.ReleasTime < self.RealExpTime+self.TimePeriods :
+        while self.NowOrder.ReleasTime < self.RealExpTime+self.time_periods :
 
             if self.NowOrder.ID == self.Orders[-1].ID:
                 break
@@ -938,7 +938,7 @@ class Simulation(object):
                             TempMin = (i,TempRoadCost,NowCluster)
                     #--------------------------------------
                 #Neighbor car search system to increase search range
-                elif self.NeighborCanServer and len(NowCluster.Neighbor):
+                elif self.neighbor_can_server and len(NowCluster.Neighbor):
                     TempMin = self.FindServerVehicleFunction(
                                                             NeighborServerDeepLimit=self.NeighborServerDeepLimit,
                                                             Visitlist={},Cluster=NowCluster,TempMin=None,deep=0
@@ -995,7 +995,7 @@ class Simulation(object):
             elif TempRoadCost < TempMin[1]:
                 TempMin = (i,TempRoadCost,Cluster)
 
-        if self.NeighborCanServer:
+        if self.neighbor_can_server:
             for j in Cluster.Neighbor:
                 TempMin = self.FindServerVehicleFunction(NeighborServerDeepLimit,Visitlist,j,TempMin,deep+1)
         return TempMin
@@ -1039,10 +1039,10 @@ class Simulation(object):
         return
 
     def SimCity(self):
-        self.RealExpTime = self.Orders[0].ReleasTime - self.TimePeriods
+        self.RealExpTime = self.Orders[0].ReleasTime - self.time_periods
 
         #To complete running orders
-        EndTime = self.Orders[-1].ReleasTime + 3 * self.TimePeriods
+        EndTime = self.Orders[-1].ReleasTime + 3 * self.time_periods
 
         self.NowOrder = self.Orders[0]
         self.step = 0
@@ -1093,7 +1093,7 @@ class Simulation(object):
 
             #A time slot is processed
             self.step += 1
-            self.RealExpTime += self.TimePeriods
+            self.RealExpTime += self.time_periods
         #------------------------------------------------
         EpisodeEndTime = dt.datetime.now()
 
@@ -1108,8 +1108,8 @@ class Simulation(object):
         print("Experiment over")
         print("Episode: " + str(self.Episode))
         print("Clusting mode: " + self.cluster_mode)
-        print("Demand Prediction mode: " + self.DemandPredictionMode)
-        print("Dispatch mode: " + self.DispatchMode)
+        print("Demand Prediction mode: " + self.demand_prediction_mode)
+        print("Dispatch mode: " + self.dispatch_mode)
         print("Date: " + str(self.Orders[0].ReleasTime.month) + "/" + str(self.Orders[0].ReleasTime.day))
         print("Weekend or Workday: " + self.WorkdayOrWeekend(self.Orders[0].ReleasTime.weekday()))
         if self.cluster_mode != "Grid":
@@ -1141,7 +1141,7 @@ if __name__ == '__main__':
     ClusterMode = "Grid"
     EXPSIM = Simulation(
                         cluster_mode = ClusterMode,
-                        DemandPredictionMode = DemandPredictionMode,
+                        demand_prediction_mode = DemandPredictionMode,
                         DispatchMode = DispatchMode,
                         VehiclesNumber = VehiclesNumber,
                         TimePeriods = TIMESTEP,

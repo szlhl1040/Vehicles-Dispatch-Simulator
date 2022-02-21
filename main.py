@@ -5,7 +5,7 @@ from simulator.simulator import Simulation
 if __name__ == "__main__":
     EXPSIM = Simulation(
         cluster_mode = ClusterMode,
-        DemandPredictionMode = DemandPredictionMode,
+        demand_prediction_mode = DemandPredictionMode,
         DispatchMode = DispatchMode,
         VehiclesNumber = VehiclesNumber,
         TimePeriods = TIMESTEP,
