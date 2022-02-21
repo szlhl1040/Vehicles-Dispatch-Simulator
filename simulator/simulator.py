@@ -63,8 +63,8 @@ class Simulation(object):
         dispatch_mode,
         vehicles_number,
         time_periods,
-        LocalRegionBound,
-        SideLengthMeter,
+        local_region_bound,
+        side_length_meter,
         VehiclesServiceMeter,
         NeighborCanServer,
         FocusOnLocalRegion
@@ -99,10 +99,10 @@ class Simulation(object):
         self.NodeID2NodesLocation = {}
         self.TransitionTempPool = []
 
-        self.MapWestBound = LocalRegionBound[0]
-        self.MapEastBound = LocalRegionBound[1]
-        self.MapSouthBound = LocalRegionBound[2]
-        self.MapNorthBound = LocalRegionBound[3]
+        self.MapWestBound = local_region_bound[0]
+        self.MapEastBound = local_region_bound[1]
+        self.MapSouthBound = local_region_bound[2]
+        self.MapNorthBound = local_region_bound[3]
 
         #Weather data
         # TODO: MUST CHANGE
@@ -131,8 +131,8 @@ class Simulation(object):
         self.dispatch_mode = dispatch_mode
         self.vehicles_number = vehicles_number
         self.time_periods = time_periods
-        self.local_region_bound = LocalRegionBound
-        self.side_length_meter = SideLengthMeter
+        self.local_region_bound = local_region_bound
+        self.side_length_meter = side_length_meter
         self.vehicle_service_meter = VehiclesServiceMeter
         self.ClustersNumber = None
         self.NumGrideWidth = None
@@ -1158,8 +1158,8 @@ if __name__ == '__main__':
                         dispatch_mode = DispatchMode,
                         vehicles_number = VehiclesNumber,
                         time_periods = TIMESTEP,
-                        LocalRegionBound = LocalRegionBound,
-                        SideLengthMeter = SideLengthMeter,
+                        local_region_bound = LocalRegionBound,
+                        side_length_meter = SideLengthMeter,
                         VehiclesServiceMeter = VehiclesServiceMeter,
                         NeighborCanServer = NeighborCanServer,
                         FocusOnLocalRegion = FocusOnLocalRegion,
