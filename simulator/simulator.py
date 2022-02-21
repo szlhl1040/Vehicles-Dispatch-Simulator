@@ -45,7 +45,7 @@ class Simulation(object):
 
     def __init__(
         self,
-        ClusterMode,
+        cluster_mode,
         DemandPredictionMode,
         DispatchMode,
         VehiclesNumber,
@@ -114,7 +114,7 @@ class Simulation(object):
         #------------------------------------------
 
         #Input parameters
-        self.ClusterMode = ClusterMode
+        self.cluster_mode = cluster_mode
         self.DispatchMode = DispatchMode
         self.VehiclesNumber = VehiclesNumber
         self.TimePeriods = TimePeriods 
@@ -173,13 +173,15 @@ class Simulation(object):
 
         #read orders
         #-----------------------------------------
-        if self.FocusOnLocalRegion == False:
+        # if self.FocusOnLocalRegion == False:
+        if True:
             Orders = ReadOrder(input_file_path=base_data_path / TRAIN / f"order_2016{str(OrderFileDate)}.csv")
             self.Orders = [Order(i[0],i[1],self.NodeIDList.index(i[2]),self.NodeIDList.index(i[3]),i[1]+PICKUPTIMEWINDOW,None,None,None) for i in Orders]
         else:
             SaveLocalRegionBoundOrdersPath = base_data_path / TRAIN / f"order_2016{str(OrderFileDate)}.csv"
             if os.path.exists(SaveLocalRegionBoundOrdersPath):
                 Orders = ReadResetOrder(input_file_path=SaveLocalRegionBoundOrdersPath)
+                breakpoint()
                 self.Orders = [Order(i[0],string_pdTimestamp(i[1]),self.NodeIDList.index(i[2]),self.NodeIDList.index(i[3]),string_pdTimestamp(i[1])+PICKUPTIMEWINDOW,None,None,None) for i in Orders]
             else:
                 Orders = ReadOrder(input_file_path=base_data_path / TRAIN / f"order_2016{str(OrderFileDate)}.csv")
@@ -308,10 +310,10 @@ class Simulation(object):
         print("Read all files")
         self.Node,self.NodeIDList,Orders,Vehicles,self.Map = ReadAllFiles(OrderFileDate)
 
-        if self.ClusterMode != "Grid":
+        if self.cluster_mode != "Grid":
             print("Create Clusters")
             self.Clusters = self.CreateCluster()
-        elif self.ClusterMode == "Grid":
+        elif self.cluster_mode == "Grid":
             print("Create Grids")
             self.Clusters = self.CreateGrid()
 
@@ -319,7 +321,7 @@ class Simulation(object):
         NodeID = self.Node['NodeID'].values
         for i in range(len(NodeID)):
             NodeID[i] = self.NodeIDList.index(NodeID[i])
-        for i in NodeID:
+        for i in tqdm(NodeID):
             for j in self.Clusters:
                 for k in j.Nodes:
                     if i == k[0]:
@@ -405,7 +407,7 @@ class Simulation(object):
             NodeLocation = np.array(NodeLocation)
         #--------------------------------------------------
         NodeSet = {}
-        for i in range(len(NodeID)):
+        for i in tqdm(range(len(NodeID))):
             NodeSet[(NodeLocation[i][0],NodeLocation[i][1])] = self.NodeIDList.index(NodeID[i])
 
         #Build each grid
@@ -422,7 +424,7 @@ class Simulation(object):
 
         AllGrid = [Grid(i,[],[],0,[],{},[]) for i in range(NumGride)]
 
-        for key,value in NodeSet.items():
+        for key,value in tqdm(NodeSet.items()):
             NowGridWidthNum = None
             NowGridHeightNum = None
 
@@ -463,7 +465,7 @@ class Simulation(object):
 
         #Add neighbors to each grid
         #------------------------------------------------------
-        for i in AllGrid:
+        for i in tqdm(AllGrid):
 
             #Bound Check
             #----------------------------
@@ -572,7 +574,7 @@ class Simulation(object):
 
         Clusters=[Cluster(i,[],[],0,[],{},[]) for i in range(self.ClustersNumber)]
 
-        ClusterPath = './data/'+str(self.LocalRegionBound)+str(self.ClustersNumber)+str(self.ClusterMode)+'Clusters.csv'
+        ClusterPath = './data/'+str(self.LocalRegionBound)+str(self.ClustersNumber)+str(self.cluster_mode)+'Clusters.csv'
         if os.path.exists(ClusterPath):
             reader = pd.read_csv(ClusterPath,chunksize = 1000)
             label_pred = []
@@ -592,7 +594,7 @@ class Simulation(object):
             for j in range(len(temp)):
                 Clusters[i].Nodes.append((self.NodeIDList.index(N[(temp[j,0],temp[j,1])]),(temp[j,0],temp[j,1])))
 
-        SaveClusterNeighborPath = './data/'+str(self.LocalRegionBound)+str(self.ClustersNumber)+str(self.ClusterMode)+'Neighbor.csv'
+        SaveClusterNeighborPath = './data/'+str(self.LocalRegionBound)+str(self.ClustersNumber)+str(self.cluster_mode)+'Neighbor.csv'
 
         if not os.path.exists(SaveClusterNeighborPath):
             print("Computing Neighbor relationships between clusters")
@@ -683,7 +685,7 @@ class Simulation(object):
 
         elif self.DemandPredictionMode == 'HA':
             self.DemandPredictorModule = HAPredictionModel()
-            DemandPredictionModelPath = "./model/"+str(self.DemandPredictionMode)+"PredictionModel"+str(self.ClusterMode)+str(self.SideLengthMeter)+str(self.LocalRegionBound)+".csv"
+            DemandPredictionModelPath = "./model/"+str(self.DemandPredictionMode)+"PredictionModel"+str(self.cluster_mode)+str(self.SideLengthMeter)+str(self.LocalRegionBound)+".csv"
         #You can extend the predictor here
         #elif self.DemandPredictionMode == 'Your predictor name':
         else:
@@ -747,7 +749,7 @@ class Simulation(object):
 
         plt.xlim(self.MapWestBound , self.MapEastBound)
         plt.ylim(self.MapSouthBound , self.MapNorthBound)
-        plt.title(self.ClusterMode)
+        plt.title(self.cluster_mode)
         plt.show()
         return
 
@@ -777,7 +779,7 @@ class Simulation(object):
 
         plt.xlim(self.MapWestBound , self.MapEastBound)
         plt.ylim(self.MapSouthBound , self.MapNorthBound)
-        plt.title(self.ClusterMode)
+        plt.title(self.cluster_mode)
         plt.show()
         return
 
@@ -1105,14 +1107,14 @@ class Simulation(object):
         #------------------------------------------------
         print("Experiment over")
         print("Episode: " + str(self.Episode))
-        print("Clusting mode: " + self.ClusterMode)
+        print("Clusting mode: " + self.cluster_mode)
         print("Demand Prediction mode: " + self.DemandPredictionMode)
         print("Dispatch mode: " + self.DispatchMode)
         print("Date: " + str(self.Orders[0].ReleasTime.month) + "/" + str(self.Orders[0].ReleasTime.day))
         print("Weekend or Workday: " + self.WorkdayOrWeekend(self.Orders[0].ReleasTime.weekday()))
-        if self.ClusterMode != "Grid":
+        if self.cluster_mode != "Grid":
             print("Number of Clusters: " + str(len(self.Clusters)))
-        elif self.ClusterMode == "Grid":
+        elif self.cluster_mode == "Grid":
             print("Number of Grids: " + str((self.NumGrideWidth * self.NumGrideHeight)))
         print("Number of Vehicles: " + str(len(self.Vehicles)))
         print("Number of Orders: " + str(len(self.Orders)))
@@ -1138,7 +1140,7 @@ if __name__ == '__main__':
     DemandPredictionMode = "None"
     ClusterMode = "Grid"
     EXPSIM = Simulation(
-                        ClusterMode = ClusterMode,
+                        cluster_mode = ClusterMode,
                         DemandPredictionMode = DemandPredictionMode,
                         DispatchMode = DispatchMode,
                         VehiclesNumber = VehiclesNumber,

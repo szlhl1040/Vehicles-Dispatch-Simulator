@@ -1,4 +1,4 @@
-
+from util import DataModule
 from config.setting import *
 from simulator.simulator import Simulation
 
@@ -16,7 +16,9 @@ if __name__ == "__main__":
         FocusOnLocalRegion = FocusOnLocalRegion,
     )
 
-    EXPSIM.CreateAllInstantiate()
-    EXPSIM.SimCity()
-    EXPSIM.Reload("0602")
-    EXPSIM.SimCity()
+    date_module = DataModule()
+    EXPSIM.CreateAllInstantiate(date_module.date)
+
+    while date_module.next():
+        EXPSIM.Reload(date_module.date)
+        EXPSIM.SimCity()

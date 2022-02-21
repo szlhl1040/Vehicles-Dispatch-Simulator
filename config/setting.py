@@ -14,8 +14,8 @@ NeighborCanServer = False
 #The order, road network and grid division will be adaptive. Adjust to fit selected area
 FocusOnLocalRegion = True
 LocalRegionBound = (-74.020,-73.950,40.700,40.770)
-if FocusOnLocalRegion == False:
-    LocalRegionBound = (-74.020,-73.906,40.70,40.785)
+if FocusOnLocalRegion:
+    LocalRegionBound = (-74.020,-74.010,40.70,40.710)
 
 
 
