@@ -12,7 +12,20 @@ import logging
 import datetime as dt
 from datetime import datetime,timedelta
 from objects.objects import Cluster,Order,Vehicle,Transition,Grid
-from config.setting import *
+from config.setting import (
+    MINUTES,
+    TIMESTEP,
+    PICKUPTIMEWINDOW,
+    NeighborCanServer,
+    FocusOnLocalRegion,
+    LocalRegionBound,
+    VehiclesNumber,
+    SideLengthMeter,
+    VehiclesServiceMeter,
+    DispatchMode,
+    DemandPredictionMode,
+    ClusterMode,
+)
 from preprocessing.readfiles import *
 from util import haversine
 from tqdm import tqdm
@@ -117,7 +130,7 @@ class Simulation(object):
         self.cluster_mode = cluster_mode
         self.dispatch_mode = dispatch_mode
         self.vehicles_number = vehicles_number
-        self.time_periods = time_periods 
+        self.time_periods = time_periods
         self.local_region_bound = LocalRegionBound
         self.side_length_meter = SideLengthMeter
         self.vehicle_service_meter = VehiclesServiceMeter

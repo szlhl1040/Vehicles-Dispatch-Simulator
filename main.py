@@ -1,5 +1,16 @@
 from util import DataModule
-from config.setting import *
+from config.setting import (
+    TIMESTEP,
+    NeighborCanServer,
+    FocusOnLocalRegion,
+    LocalRegionBound,
+    VehiclesNumber,
+    SideLengthMeter,
+    VehiclesServiceMeter,
+    DispatchMode,
+    DemandPredictionMode,
+    ClusterMode,
+)
 from simulator.simulator import Simulation
 
 if __name__ == "__main__":
