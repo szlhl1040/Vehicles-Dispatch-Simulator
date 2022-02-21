@@ -49,7 +49,7 @@ class Simulation(object):
         demand_prediction_mode,
         dispatch_mode,
         vehicles_number,
-        TimePeriods,
+        time_periods,
         LocalRegionBound,
         SideLengthMeter,
         VehiclesServiceMeter,
@@ -117,7 +117,7 @@ class Simulation(object):
         self.cluster_mode = cluster_mode
         self.dispatch_mode = dispatch_mode
         self.vehicles_number = vehicles_number
-        self.time_periods = TimePeriods 
+        self.time_periods = time_periods 
         self.local_region_bound = LocalRegionBound
         self.side_length_meter = SideLengthMeter
         self.vehicle_service_meter = VehiclesServiceMeter
@@ -1144,7 +1144,7 @@ if __name__ == '__main__':
                         demand_prediction_mode = DemandPredictionMode,
                         dispatch_mode = DispatchMode,
                         vehicles_number = VehiclesNumber,
-                        TimePeriods = TIMESTEP,
+                        time_periods = TIMESTEP,
                         LocalRegionBound = LocalRegionBound,
                         SideLengthMeter = SideLengthMeter,
                         VehiclesServiceMeter = VehiclesServiceMeter,

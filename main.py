@@ -8,7 +8,7 @@ if __name__ == "__main__":
         demand_prediction_mode = DemandPredictionMode,
         dispatch_mode = DispatchMode,
         vehicles_number = VehiclesNumber,
-        TimePeriods = TIMESTEP,
+        time_periods = TIMESTEP,
         LocalRegionBound = LocalRegionBound,
         SideLengthMeter = SideLengthMeter,
         VehiclesServiceMeter = VehiclesServiceMeter,
