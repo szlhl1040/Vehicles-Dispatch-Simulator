@@ -23,8 +23,8 @@ if __name__ == "__main__":
         local_region_bound = LocalRegionBound,
         side_length_meter = SideLengthMeter,
         vehicles_server_meter = VehiclesServiceMeter,
-        NeighborCanServer = NeighborCanServer,
-        FocusOnLocalRegion = FocusOnLocalRegion,
+        neighbor_can_server = NeighborCanServer,
+        focus_on_local_region = FocusOnLocalRegion,
     )
 
     EXPSIM.CreateAllInstantiate()

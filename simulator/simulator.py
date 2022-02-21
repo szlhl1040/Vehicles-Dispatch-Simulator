@@ -66,8 +66,8 @@ class Simulation(object):
         local_region_bound,
         side_length_meter,
         vehicles_server_meter,
-        NeighborCanServer,
-        FocusOnLocalRegion
+        neighbor_can_server,
+        focus_on_local_region
     ):
 
         #Component
@@ -133,15 +133,15 @@ class Simulation(object):
         self.time_periods = time_periods
         self.local_region_bound = local_region_bound
         self.side_length_meter = side_length_meter
-        self.vehicle_service_meter = VehiclesServiceMeter
+        self.vehicle_service_meter = vehicles_server_meter
         self.ClustersNumber = None
         self.NumGrideWidth = None
         self.NumGrideHeight = None
         self.NeighborServerDeepLimit = None
 
         #Control variable
-        self.neighbor_can_server = NeighborCanServer
-        self.focus_on_local_region = FocusOnLocalRegion
+        self.neighbor_can_server = neighbor_can_server
+        self.focus_on_local_region = focus_on_local_region
 
         #Process variable
         self.RealExpTime = None
@@ -1161,8 +1161,8 @@ if __name__ == '__main__':
                         local_region_bound = LocalRegionBound,
                         side_length_meter = SideLengthMeter,
                         vehicles_server_meter = VehiclesServiceMeter,
-                        NeighborCanServer = NeighborCanServer,
-                        FocusOnLocalRegion = FocusOnLocalRegion,
+                        neighbor_can_server = NeighborCanServer,
+                        focus_on_local_region = FocusOnLocalRegion,
                         )
     EXPSIM.CreateAllInstantiate()
     EXPSIM.SimCity()
