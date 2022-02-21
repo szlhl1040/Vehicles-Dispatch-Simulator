@@ -31,5 +31,5 @@ if __name__ == "__main__":
     simulator.create_all_instantiate(date_module.date)
 
     while date_module.next():
-        simulator.Reload(date_module.date)
+        simulator.reload(date_module.date)
         simulator.simulate()

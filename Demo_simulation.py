@@ -29,5 +29,5 @@ if __name__ == "__main__":
 
     simulator.create_all_instantiate()
     simulator.simulate()
-    simulator.Reload("0602")
+    simulator.reload("0602")
     simulator.simulate()

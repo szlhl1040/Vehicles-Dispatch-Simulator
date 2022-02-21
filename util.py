@@ -3,7 +3,7 @@ from math import radians, cos, sin, asin, sqrt
 import numpy as np
 
 
-def haversine(lon1, lat1, lon2, lat2):
+def haversine(lon1, lat1, lon2, lat2) -> float:
     """
     Calculate the great circle distance between two points 
     on the earth (specified in decimal degrees)

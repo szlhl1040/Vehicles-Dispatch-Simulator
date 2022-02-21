@@ -1,18 +1,30 @@
+from typing import List
+
 import numpy as np
 import pandas as pd
 import random
+
+from pyparsing import Or
 from config.setting import *
 
 class Cluster(object):
-
-    def __init__(self,ID,Nodes,Neighbor,RebalanceNumber,IdleVehicles,VehiclesArrivetime,Orders):
+    def __init__(
+        self,
+        ID,
+        Nodes,
+        Neighbor,
+        RebalanceNumber,
+        IdleVehicles,
+        VehiclesArrivetime,
+        orders,
+    ):
         self.ID = ID
         self.Nodes = Nodes
         self.Neighbor = Neighbor
         self.RebalanceNumber = RebalanceNumber
-        self.IdleVehicles = IdleVehicles
+        self.IdleVehicles: List[Vehicle] = IdleVehicles
         self.VehiclesArrivetime = VehiclesArrivetime
-        self.Orders = Orders
+        self.orders: List[Order] = orders
         self.PerRebalanceIdleVehicles = 0
         self.LaterRebalanceIdleVehicles = 0
         self.PerMatchIdleVehicles = 0
@@ -22,7 +34,7 @@ class Cluster(object):
         self.RebalanceNumber = 0
         self.IdleVehicles.clear()
         self.VehiclesArrivetime.clear()
-        self.Orders.clear()
+        self.orders.clear()
         self.PerRebalanceIdleVehicles = 0
         self.PerMatchIdleVehicles = 0
 
@@ -38,12 +50,22 @@ class Cluster(object):
         print("RebalanceNumber:",self.RebalanceNumber)
         print("IdleVehicles:",self.IdleVehicles)
         print("VehiclesArrivetime:",self.VehiclesArrivetime)
-        print("Orders:",self.Orders)
+        print("Orders:",self.orders)
         
 
 class Order(object):
 
-    def __init__(self,ID,ReleasTime,PickupPoint,DeliveryPoint,PickupTimeWindow,PickupWaitTime,ArriveInfo,OrderValue):
+    def __init__(
+        self,
+        ID,
+        ReleasTime,
+        PickupPoint,
+        DeliveryPoint,
+        PickupTimeWindow,
+        PickupWaitTime,
+        ArriveInfo,
+        OrderValue
+    ):
         self.ID = ID                                            #This order's ID 
         self.ReleasTime = ReleasTime                            #Start time of this order
         self.PickupPoint = PickupPoint                          #The starting position of this order
@@ -74,22 +96,29 @@ class Order(object):
 
 class Vehicle(object):
 
-    def __init__(self,ID,LocationNode,Cluster,Orders,DeliveryPoint):
+    def __init__(
+        self,
+        ID,
+        LocationNode,
+        Cluster,
+        orders,
+        DeliveryPoint
+    ):
         self.ID = ID                                            #This vehicle's ID    
         self.LocationNode = LocationNode                        #Current vehicle's location
         self.Cluster = Cluster                                  #Which cluster the current vehicle belongs to
-        self.Orders = Orders                                    #Orders currently on board
+        self.orders: List = orders                                    #Orders currently on board
         self.DeliveryPoint = DeliveryPoint                      #Next destination of current vehicle
 
     def ArriveVehicleUpDate(self, DeliveryCluster):
         self.LocationNode = self.DeliveryPoint
         self.DeliveryPoint = None
         self.Cluster = DeliveryCluster
-        if len(self.Orders):
-            self.Orders.clear()
+        if len(self.orders):
+            self.orders.clear()
 
     def Reset(self):
-        self.Orders.clear()
+        self.orders.clear()
         self.DeliveryPoint = None
 
     def Example(self):
@@ -97,14 +126,28 @@ class Vehicle(object):
         print("ID:",self.ID)
         print("LocationNode:",self.LocationNode)
         print("Cluster:",self.Cluster)
-        print("Orders:",self.Orders)
+        print("Orders:",self.orders)
         print("DeliveryPoint:",self.DeliveryPoint)
         print()
 
 
 class Transition(object):
 
-    def __init__(self,FromCluster,ArriveCluster,Vehicle,State,StateQTable,Action,TotallyReward,PositiveReward,NegativeReward,NeighborNegativeReward,State_,State_QTable):
+    def __init__(
+        self,
+        FromCluster,
+        ArriveCluster,
+        Vehicle,
+        State,
+        StateQTable,
+        Action,
+        TotallyReward,
+        PositiveReward,
+        NegativeReward,
+        NeighborNegativeReward,
+        State_,
+        State_QTable
+    ):
         self.FromCluster = FromCluster
         self.ArriveCluster = ArriveCluster
         self.Vehicle = Vehicle
@@ -129,15 +172,23 @@ class Transition(object):
 
 
 class Grid(object):
-
-    def __init__(self,ID,Nodes,Neighbor,RebalanceNumber,IdleVehicles,VehiclesArrivetime,Orders):
+    def __init__(
+        self,
+        ID,
+        Nodes,
+        Neighbor,
+        RebalanceNumber,
+        IdleVehicles,
+        VehiclesArrivetime,
+        orders,
+    ):
         self.ID = ID
         self.Nodes = Nodes
         self.Neighbor = Neighbor
         self.RebalanceNumber = RebalanceNumber
-        self.IdleVehicles = IdleVehicles
+        self.IdleVehicles: List[Vehicle] = IdleVehicles
         self.VehiclesArrivetime = VehiclesArrivetime
-        self.Orders = Orders
+        self.orders: List[Order] = orders
         self.PerRebalanceIdleVehicles = 0
         self.LaterRebalanceIdleVehicles = 0
         self.PerMatchIdleVehicles = 0
@@ -146,7 +197,7 @@ class Grid(object):
         self.RebalanceNumber = 0
         self.IdleVehicles.clear()
         self.VehiclesArrivetime.clear()
-        self.Orders.clear()
+        self.orders.clear()
         self.PerRebalanceIdleVehicles = 0
         self.PerMatchIdleVehicles = 0
 
@@ -164,6 +215,6 @@ class Grid(object):
         print("RebalanceNumber:",self.RebalanceNumber)
         print("IdleVehicles:",self.IdleVehicles)
         print("VehiclesArrivetime:",self.VehiclesArrivetime)
-        print("Orders:",self.Orders)
+        print("Orders:",self.orders)
         print()
 

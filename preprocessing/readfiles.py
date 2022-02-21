@@ -110,20 +110,20 @@ def ReadAllFiles(OrderFileDate="0601"):
 
     Node = ReadNode(NodePath)
     NodeIDList = ReadNodeIDList(NodeIDListPath)
-    Orders = ReadOrder(OrdersPath)
+    orders = ReadOrder(OrdersPath)
     Vehicles = ReadDriver(VehiclesPath)
     Map = ReadCostMap(MapPath)
-    return Node,NodeIDList,Orders,Vehicles,Map
+    return Node,NodeIDList,orders,Vehicles,Map
 
 def ReadOrdersVehiclesFiles(OrderFileDate="0601"):
     OrdersPath = os.path.join(os.getcwd(),"data", "Order", "modified", "train", "order_2016" + OrderFileDate + ".csv")
     VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
-    Orders = ReadOrder(OrdersPath)
+    orders = ReadOrder(OrdersPath)
     Vehicles = ReadDriver(VehiclesPath)
-    return Orders,Vehicles
+    return orders,Vehicles
 
 def ReadLocalRegionBoundOrdersVehiclesFiles(SaveLocalRegionBoundOrdersPath):
     OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
-    Orders = ReadOrder(OrdersPath)
-    return Orders
+    orders = ReadOrder(OrdersPath)
+    return orders
 
