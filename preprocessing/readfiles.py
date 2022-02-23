@@ -1,11 +1,12 @@
 import os
 import sys
+from typing import Tuple, List
 import numpy as np
 import pandas as pd
 import datetime as dt
 from datetime import datetime
 
-def timestamp_datetime(value):
+def timestamp_datetime(value) -> datetime:
     d = datetime.fromtimestamp(value)
     t = dt.datetime(d.year,d.month,d.day,d.hour,d.minute,0)
     return t
@@ -13,50 +14,51 @@ def timestamp_datetime(value):
 def string_datetime(value):
     return dt.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
 
-def string_pdTimestamp(value):
+def string_pd_timestamp(value):
     d = string_datetime(value)
     t = pd.Timestamp(d.year, d.month, d.day, d.hour, d.minute)
     return t
 
-def ReadMap(input_file_path):
+def read_map(input_file_path: str) -> np.ndarray:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
-    Map = []
+    map_list = []
     for chunk in reader:
-        Map.append(chunk)
-    Map = pd.concat(Map)
-    Map = Map.drop(["Unnamed: 0"], axis=1)
-    Map = Map.values
-    Map = Map.astype('int64')
-    return Map
+        map_list.append(chunk)
+    map_df: pd.DataFrame = pd.concat(map_list)
+    map_df = map_df.drop(["Unnamed: 0"], axis=1)
+    map_values = map_df.values
+    map_values = map_values.astype('int64')
 
-def ReadCostMap(input_file_path):
+    return map_values
+
+def read_cost_map(input_file_path: str) -> pd.DataFrame:
     reader = pd.read_csv(input_file_path,header=None,chunksize = 1000)
-    Map = []
+    map_list = []
     for chunk in reader:
-        Map.append(chunk)
-    Map = pd.concat(Map)
-    return Map
+        map_list.append(chunk)
+    map_df: pd.DataFrame = pd.concat(map_list)
+    return map_df
 
-def ReadPath(input_file_path):
+def read_path(input_file_path) -> np.ndarray:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
-    Path = []
+    path_list = []
     for chunk in reader:
-        Path.append(chunk)
-    Path = pd.concat(Path)
-    Path = Path.drop(["Unnamed: 0"], axis=1)
-    Path = Path.values
-    Path = Path.astype('int64')
-    return Path
+        path_list.append(chunk)
+    path_df = pd.concat(path_list)
+    path_df = path_df.drop(["Unnamed: 0"], axis=1)
+    path_values = path_df.values
+    path_values = path_values.astype('int64')
+    return path_values
 
-def ReadNode(input_file_path):
+def read_node(input_file_path) -> pd.DataFrame:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
-    Node = []
+    node_list = []
     for chunk in reader:
-        Node.append(chunk)
-    Node = pd.concat(Node)
-    return Node
+        node_list.append(chunk)
+    node_df = pd.concat(node_list)
+    return node_df
 
-def read_node_id_list(input_file_path):
+def read_node_id_list(input_file_path) -> List[int]:
     node_id_list = []
     with open(input_file_path, 'r') as f:
         data = f.readlines()
@@ -67,60 +69,61 @@ def read_node_id_list(input_file_path):
             node_id_list.append(odom)
     return node_id_list
 
-def read_order(input_file_path):
+def read_order(input_file_path) -> np.ndarray:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
-    Order = []
+    order_list = []
     for chunk in reader:
-        Order.append(chunk)
-    Order = pd.concat(Order)
-    Order = Order.drop(columns = ['End_time', 'PointS_Longitude', 'PointS_Latitude', 'PointE_Longitude', 'PointE_Latitude'])
-    Order["Start_time"] = Order["Start_time"].apply(timestamp_datetime)
-    Order = Order.sort_values(by = "Start_time")
-    Order["ID"] = range(0,Order.shape[0])
-    Order = Order[["ID", "Start_time", "NodeS", "NodeE"]]
-    Order = Order.values
-    return Order
+        order_list.append(chunk)
+    order_df: pd.DataFrame = pd.concat(order_list)
+    order_df = order_df.drop(columns = ['End_time', 'PointS_Longitude', 'PointS_Latitude', 'PointE_Longitude', 'PointE_Latitude'])
+    order_df["Start_time"] = order_df["Start_time"].apply(timestamp_datetime)
+    order_df = order_df.sort_values(by = "Start_time")
+    order_df["ID"] = range(0,order_df.shape[0])
+    order_df = order_df[["ID", "Start_time", "NodeS", "NodeE"]]
+    order_values = order_df.values
 
-def ReadResetOrder(input_file_path):
+    return order_values
+
+def read_reset_order(input_file_path) -> np.ndarray:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
-    Order = []
+    order_list = []
     for chunk in reader:
-        Order.append(chunk)
-    Order = pd.concat(Order)
-    Order = Order.values
-    return Order
+        order_list.append(chunk)
+    order_df = pd.concat(order_list)
+    order_values = order_df.values
+    return order_values
 
-def ReadDriver(input_file_path="./data/Drivers0601.csv"):
+def read_driver(input_file_path="./data/Drivers0601.csv") -> np.ndarray:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
-    Driver = []
+    driver_list = []
     for chunk in reader:
-        Driver.append(chunk)
-    Driver = pd.concat(Driver)
-    if "Start_time" in Driver.columns:
-        Driver = Driver.drop(columns=['Start_time'])
-    Driver = Driver.values
-    return Driver
+        driver_list.append(chunk)
+    driver_df: pd.DataFrame = pd.concat(driver_list)
+    if "Start_time" in driver_df.columns:
+        driver_df = driver_df.drop(columns=['Start_time'])
+    driver_values = driver_df.values
+    return driver_values
 
-def read_all_files(order_file_date="0601"):
-    NodePath = os.path.join(os.getcwd(),"data","Node.csv")
-    NodeIDListPath = os.path.join(os.getcwd(),"data","NodeIDList.txt")
-    OrdersPath = os.path.join(os.getcwd(), "data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
-    VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
-    MapPath = os.path.join(os.getcwd(),"data","AccurateMap.csv")
+def read_all_files(order_file_date: str = "0601") -> Tuple[pd.DataFrame, List[int], np.ndarray, np.ndarray, pd.DataFrame]:
+    node_path = os.path.join(os.getcwd(),"data","Node.csv")
+    node_id_list_path = os.path.join(os.getcwd(),"data","NodeIDList.txt")
+    orders_path = os.path.join(os.getcwd(), "data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
+    vehicles_path = os.path.join(os.getcwd(),"data","Drivers0601.csv")
+    map_path = os.path.join(os.getcwd(),"data","AccurateMap.csv")
 
-    Node = ReadNode(NodePath)
-    node_id_list = read_node_id_list(NodeIDListPath)
-    orders = read_order(OrdersPath)
-    vehicles = ReadDriver(VehiclesPath)
-    Map = ReadCostMap(MapPath)
-    return Node,node_id_list,orders,vehicles,Map
+    node_df = read_node(node_path)
+    node_id_list = read_node_id_list(node_id_list_path)
+    orders = read_order(orders_path)
+    vehicles = read_driver(vehicles_path)
+    map_df = read_cost_map(map_path)
+    return node_df, node_id_list, orders, vehicles, map_df
 
-def read_orders_vehicles_files(order_file_date="0601"):
-    OrdersPath = os.path.join(os.getcwd(),"data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
-    VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
-    orders = read_order(OrdersPath)
-    vehicles = ReadDriver(VehiclesPath)
-    return orders,vehicles
+def read_orders_vehicles_files(order_file_date: str = "0601"):
+    orders_path = os.path.join(os.getcwd(),"data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
+    vehicles_path = os.path.join(os.getcwd(),"data","Drivers0601.csv")
+    orders = read_order(orders_path)
+    vehicles = read_driver(vehicles_path)
+    return orders, vehicles
 
 def read_local_region_bound_orders_vehicles_files(SaveLocalRegionBoundOrdersPath):
     OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + order_file_date + ".csv")

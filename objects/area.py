@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List
+from typing import List, Mapping, Tuple
 
 from objects.order import Order
 from objects.vehicle import Vehicle
@@ -8,8 +8,8 @@ class Area:
     def __init__(
         self,
         id,
-        nodes: List,
-        Neighbor,
+        nodes: List[Mapping[int, Tuple[float, float]]],  # node_index: {longitude, latitude}
+        neighbor: List['Area'],
         rebalance_number,
         idle_vehicles,
         vehicles_arrive_time,
@@ -17,7 +17,7 @@ class Area:
     ):
         self.id = id
         self.nodes = nodes
-        self.Neighbor = Neighbor
+        self.neighbor: List[Area] = neighbor
         self.rebalance_number = rebalance_number
         self.idle_vehicles: List[Vehicle] = idle_vehicles
         self.vehicles_arrive_time = vehicles_arrive_time
@@ -56,7 +56,7 @@ class Cluster(Area):
         print("Order Example output")
         print("ID:",self.id)
         print("Nodes:",self.nodes)
-        print("Neighbor:",self.Neighbor)
+        print("Neighbor:",self.neighbor)
         print("RebalanceNumber:",self.rebalance_number)
         print("IdleVehicles:",self.idle_vehicles)
         print("VehiclesArrivetime:",self.vehicles_arrive_time)
@@ -76,8 +76,8 @@ class Grid(Area):
         print("ID:",self.id)
         print("Nodes:",self.nodes)
         print("Neighbor:[",end=' ')
-        for i in self.Neighbor:
-            print(i.ID,end=' ')
+        for i in self.neighbor:
+            print(i.id,end=' ')
         print("]")
         print("RebalanceNumber:",self.rebalance_number)
         print("IdleVehicles:",self.idle_vehicles)
