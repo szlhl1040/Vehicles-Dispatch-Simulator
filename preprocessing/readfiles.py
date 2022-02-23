@@ -56,18 +56,18 @@ def ReadNode(input_file_path):
     Node = pd.concat(Node)
     return Node
 
-def ReadNodeIDList(input_file_path):
-    NodeIDList = []
+def read_node_id_list(input_file_path):
+    node_id_list = []
     with open(input_file_path, 'r') as f:
         data = f.readlines()
     
         for line in data:
             odom = line.split()
             odom = int(odom[0])
-            NodeIDList.append(odom)
-    return NodeIDList
+            node_id_list.append(odom)
+    return node_id_list
 
-def ReadOrder(input_file_path):
+def read_order(input_file_path):
     reader = pd.read_csv(input_file_path,chunksize = 1000)
     Order = []
     for chunk in reader:
@@ -101,29 +101,29 @@ def ReadDriver(input_file_path="./data/Drivers0601.csv"):
     Driver = Driver.values
     return Driver
 
-def ReadAllFiles(OrderFileDate="0601"):
+def read_all_files(order_file_date="0601"):
     NodePath = os.path.join(os.getcwd(),"data","Node.csv")
     NodeIDListPath = os.path.join(os.getcwd(),"data","NodeIDList.txt")
-    OrdersPath = os.path.join(os.getcwd(), "data", "Order", "modified", "train", "order_2016" + OrderFileDate + ".csv")
+    OrdersPath = os.path.join(os.getcwd(), "data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
     VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
     MapPath = os.path.join(os.getcwd(),"data","AccurateMap.csv")
 
     Node = ReadNode(NodePath)
-    NodeIDList = ReadNodeIDList(NodeIDListPath)
-    orders = ReadOrder(OrdersPath)
-    Vehicles = ReadDriver(VehiclesPath)
+    node_id_list = read_node_id_list(NodeIDListPath)
+    orders = read_order(OrdersPath)
+    vehicles = ReadDriver(VehiclesPath)
     Map = ReadCostMap(MapPath)
-    return Node,NodeIDList,orders,Vehicles,Map
+    return Node,node_id_list,orders,vehicles,Map
 
-def ReadOrdersVehiclesFiles(OrderFileDate="0601"):
-    OrdersPath = os.path.join(os.getcwd(),"data", "Order", "modified", "train", "order_2016" + OrderFileDate + ".csv")
+def read_orders_vehicles_files(order_file_date="0601"):
+    OrdersPath = os.path.join(os.getcwd(),"data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
     VehiclesPath = os.path.join(os.getcwd(),"data","Drivers0601.csv")
-    orders = ReadOrder(OrdersPath)
-    Vehicles = ReadDriver(VehiclesPath)
-    return orders,Vehicles
+    orders = read_order(OrdersPath)
+    vehicles = ReadDriver(VehiclesPath)
+    return orders,vehicles
 
-def ReadLocalRegionBoundOrdersVehiclesFiles(SaveLocalRegionBoundOrdersPath):
-    OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + OrderFileDate + ".csv")
-    orders = ReadOrder(OrdersPath)
+def read_local_region_bound_orders_vehicles_files(SaveLocalRegionBoundOrdersPath):
+    OrdersPath = os.path.join(os.getcwd(),"data","order_2016" + order_file_date + ".csv")
+    orders = read_order(OrdersPath)
     return orders
 

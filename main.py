@@ -9,13 +9,13 @@ from config.setting import (
     VehiclesServiceMeter,
     DispatchMode,
     DemandPredictionMode,
-    ClusterMode,
+    AreaMode,
 )
 from simulator.simulator import Simulation
 
 if __name__ == "__main__":
     simulator = Simulation(
-        cluster_mode=ClusterMode,
+        area_mode=AreaMode,
         demand_prediction_mode=DemandPredictionMode,
         dispatch_mode=DispatchMode,
         vehicles_number=VehiclesNumber,
