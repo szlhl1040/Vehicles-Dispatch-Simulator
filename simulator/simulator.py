@@ -1,30 +1,28 @@
+import datetime
+import os
+import random
+from pathlib import Path
+from typing import List, Mapping, Optional, Tuple
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
+from config.setting import MINUTES, PICKUPTIMEWINDOW
 from domain.area_mode import AreaMode
 from domain.arrive_info import ArriveInfo
 from domain.demand_prediction_mode import DemandPredictionMode
 from domain.local_region_bound import LocalRegionBound
-
-import os
-from typing import List, Mapping, Optional, Tuple
-from pathlib import Path
-import random
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-import datetime
-from objects.objects import Order, Vehicle, Area, Cluster, Grid
-from config.setting import (
-    MINUTES,
-    PICKUPTIMEWINDOW,
-)
+from objects.objects import Area, Cluster, Grid, Order, Vehicle
 from preprocessing.readfiles import (
-    string_pd_timestamp,
+    read_all_files,
     read_map,
     read_order,
     read_reset_order,
-    read_all_files,
+    string_pd_timestamp,
 )
 from util import haversine
-from tqdm import tqdm
 
 ###########################################################################
 
