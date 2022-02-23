@@ -4,19 +4,25 @@ from domain.demand_prediction_mode import DemandPredictionMode
 from domain.local_region_bound import LocalRegionBound
 
 import os
-from typing import List, Mapping, Optional
+from typing import List, Mapping, Optional, Tuple
 from pathlib import Path
 import random
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import datetime as dt
+import datetime
 from objects.objects import Order, Vehicle, Area, Cluster, Grid
 from config.setting import (
     MINUTES,
     PICKUPTIMEWINDOW,
 )
-from preprocessing.readfiles import *
+from preprocessing.readfiles import (
+    string_pd_timestamp,
+    read_map,
+    read_order,
+    read_reset_order,
+    read_all_files,
+)
 from util import haversine
 from tqdm import tqdm
 
@@ -72,13 +78,13 @@ class Simulation(object):
         self.dispatch_num: int = 0
         self.totally_dispatch_cost: int = 0
         self.totally_wait_time: int = 0
-        self.totally_update_time = dt.timedelta()
-        self.totally_reward_time = dt.timedelta()
-        self.totally_next_state_time = dt.timedelta()
-        self.totally_learning_time = dt.timedelta()
-        self.totally_dispatch_time = dt.timedelta()
-        self.totally_match_time = dt.timedelta()
-        self.totally_demand_predict_time = dt.timedelta()
+        self.totally_update_time = datetime.timedelta()
+        self.totally_reward_time = datetime.timedelta()
+        self.totally_next_state_time = datetime.timedelta()
+        self.totally_learning_time = datetime.timedelta()
+        self.totally_dispatch_time = datetime.timedelta()
+        self.totally_match_time = datetime.timedelta()
+        self.totally_demand_predict_time = datetime.timedelta()
 
         # Data variable
         self.areas: List[Area] = None
@@ -142,7 +148,7 @@ class Simulation(object):
         self.step = None
         self.episode = 0
 
-        self.calculate_the_scale_of_devision()
+        self.__calculate_the_scale_of_devision()
 
         # Demand predictor variable
         self.demand_prediction_mode: DemandPredictionMode = demand_prediction_mode
@@ -170,12 +176,12 @@ class Simulation(object):
         self.dispatch_num = 0
         self.totally_dispatch_cost = 0
         self.totally_wait_time = 0
-        self.totally_update_time = dt.timedelta()
-        self.totally_next_state_time = dt.timedelta()
-        self.totally_learning_time = dt.timedelta()
-        self.totally_dispatch_time = dt.timedelta()
-        self.totally_match_time = dt.timedelta()
-        self.totally_demand_predict_time = dt.timedelta()
+        self.totally_update_time = datetime.timedelta()
+        self.totally_next_state_time = datetime.timedelta()
+        self.totally_learning_time = datetime.timedelta()
+        self.totally_dispatch_time = datetime.timedelta()
+        self.totally_match_time = datetime.timedelta()
+        self.totally_demand_predict_time = datetime.timedelta()
 
         self.orders = None
         self.transition_temp_prool.clear()
@@ -275,7 +281,7 @@ class Simulation(object):
         # Calculate the value of all orders in advance
         # -------------------------------
         for each_order in self.orders:
-            each_order.order_value = self.road_cost(
+            each_order.order_value = self.__road_cost(
                 each_order.pick_up_point, each_order.delivery_point
             )
         # -------------------------------
@@ -288,7 +294,7 @@ class Simulation(object):
         for vehicle in self.vehicles:
             vehicle.reset()
 
-        self.init_vehicles_into_area()
+        self.__init_vehicles_into_area()
         # -------------------------------
 
         return
@@ -301,11 +307,11 @@ class Simulation(object):
         self.dispatch_num = 0
         self.totally_dispatch_cost = 0
         self.totally_wait_time = 0
-        self.totally_update_time = dt.timedelta()
-        self.totally_next_state_time = dt.timedelta()
-        self.totally_learning_time = dt.timedelta()
-        self.totally_dispatch_time = dt.timedelta()
-        self.totally_match_time = dt.timedelta()
+        self.totally_update_time = datetime.timedelta()
+        self.totally_next_state_time = datetime.timedelta()
+        self.totally_learning_time = datetime.timedelta()
+        self.totally_dispatch_time = datetime.timedelta()
+        self.totally_match_time = datetime.timedelta()
         self.totally_demand_predict_time = dt.timedelta()
 
         self.transition_temp_prool.clear()
@@ -324,11 +330,11 @@ class Simulation(object):
         for vehicle in self.vehicles:
             vehicle.reset()
 
-        self.init_vehicles_into_area()
+        self.__init_vehicles_into_area()
         # -------------------------------
         return
 
-    def init_vehicles_into_area(self):
+    def __init_vehicles_into_area(self) -> None:
         print("Initialization Vehicles into Clusters or Grids")
         for vehicle in self.vehicles:
             while True:
@@ -339,13 +345,13 @@ class Simulation(object):
                     vehicle.area.idle_vehicles.append(vehicle)
                     break
 
-    def load_dispatch_component(self, dispatch_module):
+    def __load_dispatch_component(self, dispatch_module) -> None:
         self.dispatch_module = dispatch_module
 
-    def road_cost(self, start, end):
+    def __road_cost(self, start, end) -> None:
         return int(self.map[start][end])
 
-    def calculate_the_scale_of_devision(self) -> None:
+    def __calculate_the_scale_of_devision(self) -> None:
 
         average_longitude = (self.map_east_bound - self.map_west_bound) / 2
         average_latitude = (self.map_north_bound - self.map_south_bound) / 2
@@ -439,7 +445,7 @@ class Simulation(object):
         # -------------------------------
         print("Pre-calculated order value")
         for each_order in self.orders:
-            each_order.order_value = self.road_cost(
+            each_order.order_value = self.__road_cost(
                 start=each_order.pick_up_point, end=each_order.delivery_point
             )
         # -------------------------------
@@ -460,7 +466,7 @@ class Simulation(object):
             )
             for vehicle_row in vehicles
         ]
-        self.init_vehicles_into_area()
+        self.__init_vehicles_into_area()
 
     def __is_order_in_limit_region(self, order: Order) -> bool:
         if not order.pick_up_point in self.node_id_to_nodes_location:
@@ -767,7 +773,7 @@ class Simulation(object):
                         tmp_sum_cost = 0
                         for node_1 in cluster_1.nodes:
                             for node_2 in cluster_2.nodes:
-                                tmp_sum_cost += self.road_cost(node_1[0], node_2[0])
+                                tmp_sum_cost += self.__road_cost(node_1[0], node_2[0])
                         if (len(cluster_1.nodes) * len(cluster_2.nodes)) == 0:
                             road_network_distance = 99999
                         else:
@@ -1149,13 +1155,13 @@ class Simulation(object):
                     # Find a nearest car to match the current order
                     # --------------------------------------
                     for vehicle in now_area.idle_vehicles:
-                        tmp_road_cost = self.road_cost(
+                        tmp___road_cost = self.__road_cost(
                             vehicle.location_node, self.now_order.pick_up_point
                         )
                         if tmp_min == None:
-                            tmp_min = (vehicle, tmp_road_cost, now_area)
-                        elif tmp_road_cost < tmp_min[1]:
-                            tmp_min = (vehicle, tmp_road_cost, now_area)
+                            tmp_min = (vehicle, tmp___road_cost, now_area)
+                        elif tmp___road_cost < tmp_min[1]:
+                            tmp_min = (vehicle, tmp___road_cost, now_area)
                     # --------------------------------------
                 # Neighbor car search system to increase search range
                 elif self.neighbor_can_server and len(now_area.neighbor):
@@ -1177,13 +1183,13 @@ class Simulation(object):
                     self.now_order.pick_up_wait_time = tmp_min[1]
                     now_vehicle.orders.append(self.now_order)
 
-                    self.totally_wait_time += self.road_cost(
+                    self.totally_wait_time += self.__road_cost(
                         now_vehicle.location_node, self.now_order.pick_up_point
                     )
 
-                    ScheduleCost = self.road_cost(
+                    schedule_cost = self.__road_cost(
                         now_vehicle.location_node, self.now_order.pick_up_point
-                    ) + self.road_cost(
+                    ) + self.__road_cost(
                         self.now_order.pick_up_point, self.now_order.delivery_point
                     )
 
@@ -1196,7 +1202,7 @@ class Simulation(object):
                     ].vehicles_arrive_time[
                         now_vehicle
                     ] = self.real_exp_time + np.timedelta64(
-                        ScheduleCost * MINUTES
+                        schedule_cost * MINUTES
                     )
 
                     # delete now Cluster's recode about now Vehicle
@@ -1223,13 +1229,13 @@ class Simulation(object):
 
         visit_list[area.id] = True
         for vehicle in area.idle_vehicles:
-            tmp_road_cost = self.road_cost(
+            tmp___road_cost = self.__road_cost(
                 vehicle.location_node, self.now_order.pick_up_point
             )
             if tmp_min == None:
-                tmp_min = (vehicle, tmp_road_cost, area)
-            elif tmp_road_cost < tmp_min[1]:
-                tmp_min = (vehicle, tmp_road_cost, area)
+                tmp_min = (vehicle, tmp___road_cost, area)
+            elif tmp___road_cost < tmp_min[1]:
+                tmp_min = (vehicle, tmp___road_cost, area)
 
         if self.neighbor_can_server:
             for j in area.neighbor:
@@ -1257,16 +1263,16 @@ class Simulation(object):
         for area in self.areas:
             # Records array of orders cleared for the last time slot
             area.orders.clear()
-            for key, value in list(area.vehicles_arrive_time.items()):
+            for vehicle, time in list(area.vehicles_arrive_time.items()):
                 # key = Vehicle ; value = Arrivetime
-                if value <= self.real_exp_time:
+                if time <= self.real_exp_time:
                     # update Order
-                    if len(key.orders):
-                        key.orders[0].arrive_order_time_record(self.real_exp_time)
+                    if len(vehicle.orders):
+                        vehicle.orders[0].arrive_order_time_record(self.real_exp_time)
                     # update Vehicle info
-                    key.arrive_vehicle_update(area)
+                    vehicle.arrive_vehicle_update(area)
                     # update Cluster record
-                    area.arrive_cluster_update(key)
+                    area.arrive_cluster_update(vehicle)
 
     def __get_next_state_function(self) -> None:
         """
@@ -1278,6 +1284,7 @@ class Simulation(object):
     def __learning_function(self) -> None:
         return
 
+
     def __call__(self) -> None:
         self.real_exp_time = self.orders[0].release_time - self.time_periods
 
@@ -1287,48 +1294,48 @@ class Simulation(object):
         self.now_order = self.orders[0]
         self.step = 0
 
-        episode_start_time = dt.datetime.now()
+        episode_start_time = datetime.datetime.now()
         print("Start experiment")
         print("----------------------------")
         while self.real_exp_time <= end_time:
 
-            step_update_start_time = dt.datetime.now()
+            step_update_start_time = datetime.datetime.now()
             self.__update_function()
-            self.totally_update_time += dt.datetime.now() - step_update_start_time
+            self.totally_update_time += datetime.datetime.now() - step_update_start_time
 
-            step_match_start_time = dt.datetime.now()
+            step_match_start_time = datetime.datetime.now()
             self.__match_function()
-            self.totally_match_time += dt.datetime.now() - step_match_start_time
+            self.totally_match_time += datetime.datetime.now() - step_match_start_time
 
-            step_reward_start_time = dt.datetime.now()
+            step_reward_start_time = datetime.datetime.now()
             self.__reward_function()
-            self.totally_reward_time += dt.datetime.now() - step_reward_start_time
+            self.totally_reward_time += datetime.datetime.now() - step_reward_start_time
 
-            step_next_state_start_time = dt.datetime.now()
+            step_next_state_start_time = datetime.datetime.now()
             self.__get_next_state_function()
             self.totally_next_state_time += (
-                dt.datetime.now() - step_next_state_start_time
+                datetime.datetime.now() - step_next_state_start_time
             )
             for area in self.areas:
                 area.dispatch_number = 0
 
-            step_learning_start_time = dt.datetime.now()
+            step_learning_start_time = datetime.datetime.now()
             self.__learning_function()
-            self.totally_learning_time += dt.datetime.now() - step_learning_start_time
+            self.totally_learning_time += datetime.datetime.now() - step_learning_start_time
 
-            step_demand_predict_start_time = dt.datetime.now()
+            step_demand_predict_start_time = datetime.datetime.now()
             self.__demand_predict_function()
             self.__supply_expect_function()
             self.totally_demand_predict_time += (
-                dt.datetime.now() - step_demand_predict_start_time
+                datetime.datetime.now() - step_demand_predict_start_time
             )
 
             # Count the number of idle vehicles before Dispatch
             for area in self.areas:
                 area.per_dispatch_idle_vehicles = len(area.idle_vehicles)
-            step_dispatch_start_time = dt.datetime.now()
+            step_dispatch_start_time = datetime.datetime.now()
             self.__dispatch_function()
-            self.totally_dispatch_time += dt.datetime.now() - step_dispatch_start_time
+            self.totally_dispatch_time += datetime.datetime.now() - step_dispatch_start_time
             # Count the number of idle vehicles after Dispatch
             for area in self.areas:
                 area.later_dispatch_idle_vehicles = len(area.idle_vehicles)
@@ -1337,7 +1344,7 @@ class Simulation(object):
             self.step += 1
             self.real_exp_time += self.time_periods
         # ------------------------------------------------
-        episode_end_time = dt.datetime.now()
+        episode_end_time = datetime.datetime.now()
 
         sum_order_value = 0
         order_value_num = 0

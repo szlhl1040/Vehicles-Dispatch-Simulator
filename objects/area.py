@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from datetime import datetime
 from typing import List, Mapping, Tuple
 
 from objects.order import Order
@@ -12,7 +13,7 @@ class Area:
         neighbor: List['Area'],
         rebalance_number,
         idle_vehicles,
-        vehicles_arrive_time,
+        vehicles_arrive_time: Mapping[Vehicle, datetime],
         orders,
     ):
         self.id = id
