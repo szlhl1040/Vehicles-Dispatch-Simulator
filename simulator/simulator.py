@@ -404,9 +404,10 @@ class Simulation(object):
             self.areas = self.__create_grid()
 
         # Construct NodeID to Cluseter map for Fast calculation
-        node_id_list = self.node["NodeID"].values
+        node_id_list = self.node["NodeID"].values.copy()
         for i in range(len(node_id_list)):
             node_id_list[i] = self.node_id_list.index(node_id_list[i])
+        
         for node_id in tqdm(node_id_list):
             for area in self.areas:
                 for node in area.nodes:
