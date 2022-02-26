@@ -34,7 +34,12 @@ class NodeManager:
 
     @property
     def node_locations(self) -> np.ndarray:
-        return np.array([[round(node.longitude, 7), round(node.latitude, 7)] for node in self.__node_list])
+        return np.array(
+            [
+                [round(node.longitude, 7), round(node.latitude, 7)]
+                for node in self.__node_list
+            ]
+        )
 
     @property
     def node_id_list(self) -> np.ndarray:

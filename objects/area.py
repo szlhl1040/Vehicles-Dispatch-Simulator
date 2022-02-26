@@ -6,12 +6,13 @@ from objects.node import Node
 from objects.order import Order
 from objects.vehicle import Vehicle
 
+
 class Area:
     def __init__(
         self,
         id,
         nodes: List[Node],  # node_index: {longitude, latitude}
-        neighbor: List['Area'],
+        neighbor: List["Area"],
         rebalance_number,
         idle_vehicles,
         vehicles_arrive_time: Mapping[Vehicle, datetime],
@@ -56,13 +57,13 @@ class Cluster(Area):
 
     def example(self):
         print("Order Example output")
-        print("ID:",self.id)
-        print("Nodes:",self.nodes)
-        print("Neighbor:",self.neighbor)
-        print("RebalanceNumber:",self.rebalance_number)
-        print("IdleVehicles:",self.idle_vehicles)
-        print("VehiclesArrivetime:",self.vehicles_arrive_time)
-        print("Orders:",self.orders)
+        print("ID:", self.id)
+        print("Nodes:", self.nodes)
+        print("Neighbor:", self.neighbor)
+        print("RebalanceNumber:", self.rebalance_number)
+        print("IdleVehicles:", self.idle_vehicles)
+        print("VehiclesArrivetime:", self.vehicles_arrive_time)
+        print("Orders:", self.orders)
 
 
 class Grid(Area):
@@ -73,16 +74,16 @@ class Grid(Area):
         self.orders.clear()
         self.per_rebalance_idle_vehicles = 0
         self.per_match_idle_vehicles = 0
-        
+
     def example(self):
-        print("ID:",self.id)
-        print("Nodes:",self.nodes)
-        print("Neighbor:[",end=' ')
+        print("ID:", self.id)
+        print("Nodes:", self.nodes)
+        print("Neighbor:[", end=" ")
         for i in self.neighbor:
-            print(i.id,end=' ')
+            print(i.id, end=" ")
         print("]")
-        print("RebalanceNumber:",self.rebalance_number)
-        print("IdleVehicles:",self.idle_vehicles)
-        print("VehiclesArrivetime:",self.vehicles_arrive_time)
-        print("Orders:",self.orders)
+        print("RebalanceNumber:", self.rebalance_number)
+        print("IdleVehicles:", self.idle_vehicles)
+        print("VehiclesArrivetime:", self.vehicles_arrive_time)
+        print("Orders:", self.orders)
         print()

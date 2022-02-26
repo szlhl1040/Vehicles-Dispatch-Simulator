@@ -189,9 +189,13 @@ class Simulation(object):
 
     def create_all_instantiate(self, order_file_date: str = "0601") -> None:
         print("Read all files")
-        node_df, self.node_id_list, orders_df, vehicles, self.__cost_map = read_all_files(
-            order_file_date
-        )
+        (
+            node_df,
+            self.node_id_list,
+            orders_df,
+            vehicles,
+            self.__cost_map,
+        ) = read_all_files(order_file_date)
         self.node_manager = NodeManager(node_df)
 
         if self.area_mode == AreaMode.CLUSTER:
@@ -200,7 +204,7 @@ class Simulation(object):
         elif self.area_mode == AreaMode.GRID:
             print("Create Grids")
             self.areas = self.__create_grid()
-        
+
         for node_id in tqdm(self.node_manager.node_id_list):
             for area in self.areas:
                 for node in area.nodes:
@@ -237,8 +241,12 @@ class Simulation(object):
         print("Pre-calculated order value")
         for each_order in self.orders:
             each_order.order_value = self.__road_cost(
-                start_node_index=self.node_manager.get_node_index(each_order.pick_up_node_id),
-                end_node_index=self.node_manager.get_node_index(each_order.delivery_node_id),
+                start_node_index=self.node_manager.get_node_index(
+                    each_order.pick_up_node_id
+                ),
+                end_node_index=self.node_manager.get_node_index(
+                    each_order.delivery_node_id
+                ),
             )
         # -------------------------------
 
@@ -320,8 +328,12 @@ class Simulation(object):
         # -------------------------------
         for each_order in self.orders:
             each_order.order_value = self.__road_cost(
-                start_node_index=self.node_manager.get_node_index(each_order.pick_up_node_id),
-                end_node_index=self.node_manager.get_node_index(each_order.delivery_node_id),
+                start_node_index=self.node_manager.get_node_index(
+                    each_order.pick_up_node_id
+                ),
+                end_node_index=self.node_manager.get_node_index(
+                    each_order.delivery_node_id
+                ),
             )
         # -------------------------------
 
@@ -384,7 +396,7 @@ class Simulation(object):
     def __load_dispatch_component(self, dispatch_module) -> None:
         self.dispatch_module = dispatch_module
 
-    def __road_cost(self, start_node_index: int, end_node_index:int) -> int:
+    def __road_cost(self, start_node_index: int, end_node_index: int) -> int:
         return int(self.__cost_map[start_node_index][end_node_index])
 
     def __calculate_the_scale_of_devision(self) -> None:
@@ -393,7 +405,12 @@ class Simulation(object):
         average_latitude = (self.map_north_bound - self.map_south_bound) / 2
 
         self.num_grid_width = int(
-            haversine(self.map_west_bound,average_latitude,self.map_east_bound,average_latitude,)
+            haversine(
+                self.map_west_bound,
+                average_latitude,
+                self.map_east_bound,
+                average_latitude,
+            )
             / self.side_length_meter
             + 1
         )
@@ -420,7 +437,7 @@ class Simulation(object):
         print("Number of grids in north-south direction", self.num_grid_height)
         print("Number of grids", self.num_areas)
         print("----------------------------")
-    
+
     def __is_order_in_limit_region(self, order: Order) -> bool:
         if not order.pick_up_node_id in self.node_id_list:
             return False
@@ -434,8 +451,9 @@ class Simulation(object):
         node_dict = {}
         for i in tqdm(range(len(node_id_list))):
             node_dict[
-                (self.node_manager.node_locations[i][0],
-                 self.node_manager.node_locations[i][1]
+                (
+                    self.node_manager.node_locations[i][0],
+                    self.node_manager.node_locations[i][1],
                 )
             ] = self.node_id_list.index(node_id_list[i])
 
@@ -454,11 +472,11 @@ class Simulation(object):
 
         for node in self.node_manager.get_nodes():
             relatively_longitude = node.longitude - self.map_west_bound
-            now_grid_width_num =  int(relatively_longitude // self.interval_width)
+            now_grid_width_num = int(relatively_longitude // self.interval_width)
             assert now_grid_width_num <= self.num_grid_width - 1
 
             relatively_latitude = node.latitude - self.map_south_bound
-            now_grid_height_num =  int(relatively_latitude // self.interval_height)
+            now_grid_height_num = int(relatively_latitude // self.interval_height)
             assert now_grid_height_num <= self.num_grid_height - 1
 
             all_grid[
@@ -617,8 +635,12 @@ class Simulation(object):
                         for node_1 in cluster_1.nodes:
                             for node_2 in cluster_2.nodes:
                                 tmp_sum_cost += self.__road_cost(
-                                    start_node_index=self.node_manager.get_node_index(node_1.id),
-                                    end_node_index=self.node_manager.get_node_index(node_2.id),
+                                    start_node_index=self.node_manager.get_node_index(
+                                        node_1.id
+                                    ),
+                                    end_node_index=self.node_manager.get_node_index(
+                                        node_2.id
+                                    ),
                                 )
                         if (len(cluster_1.nodes) * len(cluster_2.nodes)) == 0:
                             road_network_distance = 99999
@@ -967,8 +989,12 @@ class Simulation(object):
                     # --------------------------------------
                     for vehicle in now_area.idle_vehicles:
                         tmp_road_cost = self.__road_cost(
-                            start_node_index=self.node_manager.get_node_index(vehicle.location_node_id),
-                            end_node_index=self.node_manager.get_node_index(self.now_order.pick_up_node_id),
+                            start_node_index=self.node_manager.get_node_index(
+                                vehicle.location_node_id
+                            ),
+                            end_node_index=self.node_manager.get_node_index(
+                                self.now_order.pick_up_node_id
+                            ),
                         )
                         if tmp_min == None:
                             tmp_min = (vehicle, tmp_road_cost, now_area)
@@ -996,16 +1022,28 @@ class Simulation(object):
                     now_vehicle.orders.append(self.now_order)
 
                     self.totally_wait_time += self.__road_cost(
-                        start_node_index=self.node_manager.get_node_index(now_vehicle.location_node_id),
-                        end_node_index=self.node_manager.get_node_index(self.now_order.pick_up_node_id),
+                        start_node_index=self.node_manager.get_node_index(
+                            now_vehicle.location_node_id
+                        ),
+                        end_node_index=self.node_manager.get_node_index(
+                            self.now_order.pick_up_node_id
+                        ),
                     )
 
                     schedule_cost = self.__road_cost(
-                        start_node_index=self.node_manager.get_node_index(now_vehicle.location_node_id),
-                        end_node_index=self.node_manager.get_node_index(self.now_order.pick_up_node_id),
+                        start_node_index=self.node_manager.get_node_index(
+                            now_vehicle.location_node_id
+                        ),
+                        end_node_index=self.node_manager.get_node_index(
+                            self.now_order.pick_up_node_id
+                        ),
                     ) + self.__road_cost(
-                        start_node_index=self.node_manager.get_node_index(self.now_order.pick_up_node_id),
-                        end_node_index=self.node_manager.get_node_index(self.now_order.delivery_node_id),
+                        start_node_index=self.node_manager.get_node_index(
+                            self.now_order.pick_up_node_id
+                        ),
+                        end_node_index=self.node_manager.get_node_index(
+                            self.now_order.delivery_node_id
+                        ),
                     )
 
                     # Add a destination to the current vehicle
@@ -1045,8 +1083,12 @@ class Simulation(object):
         visit_list[area.id] = True
         for vehicle in area.idle_vehicles:
             tmp_road_cost = self.__road_cost(
-                start_node_index=self.node_manager.get_node_index(vehicle.location_node_id),
-                end_node_index=self.node_manager.get_node_index(self.now_order.pick_up_node_id),
+                start_node_index=self.node_manager.get_node_index(
+                    vehicle.location_node_id
+                ),
+                end_node_index=self.node_manager.get_node_index(
+                    self.now_order.pick_up_node_id
+                ),
             )
             if tmp_min == None:
                 tmp_min = (vehicle, tmp_road_cost, area)
@@ -1100,7 +1142,6 @@ class Simulation(object):
     def __learning_function(self) -> None:
         return
 
-
     def __call__(self) -> None:
         self.real_exp_time = self.orders[0].release_time - self.time_periods
 
@@ -1137,7 +1178,9 @@ class Simulation(object):
 
             step_learning_start_time = datetime.datetime.now()
             self.__learning_function()
-            self.totally_learning_time += datetime.datetime.now() - step_learning_start_time
+            self.totally_learning_time += (
+                datetime.datetime.now() - step_learning_start_time
+            )
 
             step_demand_predict_start_time = datetime.datetime.now()
             self.__demand_predict_function()
@@ -1151,7 +1194,9 @@ class Simulation(object):
                 area.per_dispatch_idle_vehicles = len(area.idle_vehicles)
             step_dispatch_start_time = datetime.datetime.now()
             self.__dispatch_function()
-            self.totally_dispatch_time += datetime.datetime.now() - step_dispatch_start_time
+            self.totally_dispatch_time += (
+                datetime.datetime.now() - step_dispatch_start_time
+            )
             # Count the number of idle vehicles after Dispatch
             for area in self.areas:
                 area.later_dispatch_idle_vehicles = len(area.idle_vehicles)
@@ -1211,6 +1256,7 @@ class Simulation(object):
         print("Totally Dispatch Time : " + str(self.totally_dispatch_time))
         print("Totally Simulation Time : " + str(self.totally_match_time))
         print("Episode Run time : " + str(episode_end_time - episode_start_time))
+
 
 """
 Experiment over

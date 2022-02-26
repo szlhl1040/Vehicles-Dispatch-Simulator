@@ -1,5 +1,4 @@
 class Transition(object):
-    
     def __init__(
         self,
         FromCluster,
@@ -13,7 +12,7 @@ class Transition(object):
         NegativeReward,
         NeighborNegativeReward,
         State_,
-        State_QTable
+        State_QTable,
     ):
         self.FromCluster = FromCluster
         self.ArriveCluster = ArriveCluster
@@ -30,9 +29,9 @@ class Transition(object):
 
     def example(self):
         print("Transition Example output")
-        print("Action:",self.Action)
-        print("TotallyReward:",self.TotallyReward)
-        print("PositiveReward:",self.PositiveReward)
-        print("NegativeReward:",self.NegativeReward)
-        print("NeighborNegativeReward:",self.NeighborNegativeReward)
+        print("Action:", self.Action)
+        print("TotallyReward:", self.TotallyReward)
+        print("PositiveReward:", self.PositiveReward)
+        print("NegativeReward:", self.NegativeReward)
+        print("NeighborNegativeReward:", self.NeighborNegativeReward)
         print()
