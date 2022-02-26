@@ -1,19 +1,18 @@
-from abc import ABCMeta, abstractmethod
+import random
+
+from objects import Area, Vehicle
 
 
-class DispatchModuleInterface(metaclass=ABCMeta):
-    @abstractmethod
-    def __init__(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def __call__(self):
+class DispatchModuleInterface:
+    def __call__(self, vehicle: Vehicle) -> bool:
         raise NotImplementedError
 
 
 class RandomDispatch(DispatchModuleInterface):
-    def __init__(self):
-        pass
+    def __call__(self, vehicle: Vehicle) -> bool:
+        current_area: Area = vehicle.area
+        candidate_area = current_area.neighbor + [current_area]
+        next_area = random.choice(candidate_area)
+        vehicle.area = next_area
 
-    def __call__(self):
-        pass
+        return current_area == next_area

@@ -2,4 +2,4 @@ from enum import Enum
 
 
 class DispatchMode(Enum):
-    RANDOM: str = "random"
+    RANDOM: str = "Random"

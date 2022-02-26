@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from config import MINUTES, PICKUPTIMEWINDOW
 from domain import (
     AreaMode,
     ArriveInfo,
@@ -62,6 +61,8 @@ class Simulation(object):
         side_length_meter: int,
         vehicles_server_meter: int,
         neighbor_can_server: bool,
+        minutes: int,
+        pick_up_time_window: np.float64,
     ):
 
         # Component
@@ -81,6 +82,8 @@ class Simulation(object):
         self.__cost_map: np.ndarray = None
         self.node_id_to_area: Mapping[int, Area] = {}
         self.transition_temp_prool: List = []
+        self.minutes = minutes
+        self.pick_up_time_window = pick_up_time_window
 
         self.local_region_bound = local_region_bound
 
@@ -204,7 +207,7 @@ class Simulation(object):
                 release_time=order_row["Start_time"],
                 pick_up_node_id=order_row["NodeS"],
                 delivery_node_id=order_row["NodeE"],
-                pick_up_time_window=order_row["Start_time"] + PICKUPTIMEWINDOW,
+                pick_up_time_window=order_row["Start_time"] + self.pick_up_time_window,
                 pick_up_wait_time=None,
                 arrive_info=None,
                 order_value=None,
@@ -275,7 +278,7 @@ class Simulation(object):
                 release_time=order_row["Start_time"],
                 pick_up_node_id=order_row["NodeS"],
                 delivery_node_id=order_row["NodeE"],
-                pick_up_time_window=order_row[1] + PICKUPTIMEWINDOW,
+                pick_up_time_window=order_row[1] + self.pick_up_time_window,
                 pick_up_wait_time=None,
                 arrive_info=None,
                 order_value=None,
@@ -896,8 +899,9 @@ class Simulation(object):
         """
         for area in self.areas:
             for vehicles in area.idle_vehicles:
-                self.dispatch_module()
-        return
+                dispatched = self.dispatch_module(vehicles)
+                if dispatched:
+                    self.static_service.increment_dispatch_num()
 
     def __match_function(self) -> None:
         """
@@ -952,7 +956,7 @@ class Simulation(object):
                     )
 
                 # When all Neighbor Cluster without any idle Vehicles
-                if tmp_min == None or tmp_min[1] > PICKUPTIMEWINDOW:
+                if tmp_min == None or tmp_min[1] > self.pick_up_time_window:
                     self.static_service.increment_reject_num()
                     self.now_order.arrive_info = ArriveInfo.REJECT
                 # Successfully matched a vehicle
@@ -994,11 +998,7 @@ class Simulation(object):
                     # Delivery Cluster {Vehicle:ArriveTime}
                     self.areas[
                         self.node_id_to_area[self.now_order.delivery_node_id].id
-                    ].vehicles_arrive_time[
-                        now_vehicle
-                    ] = self.real_exp_time + np.timedelta64(
-                        schedule_cost * MINUTES
-                    )
+                    ].vehicles_arrive_time[now_vehicle] = self.real_exp_time + np.timedelta64(schedule_cost * self.minutes)
 
                     # delete now Cluster's recode about now Vehicle
                     tmp_min[2].idle_vehicles.remove(now_vehicle)
@@ -1165,9 +1165,9 @@ class Simulation(object):
         # ------------------------------------------------
         print("Experiment over")
         print(f"Episode: {self.episode}")
-        print(f"Clusting mode: {self.area_mode}")
-        print(f"Demand Prediction mode: {self.demand_prediction_mode}")
-        print(f"Dispatch mode: {self.dispatch_mode}")
+        print(f"Clusting mode: {self.area_mode.value}")
+        print(f"Demand Prediction mode: {self.demand_prediction_mode.value}")
+        print(f"Dispatch mode: {self.dispatch_mode.value}")
         print(
             "Date: "
             + str(self.orders[0].release_time.month)
@@ -1258,21 +1258,22 @@ Experiment over
 Episode: 0
 Clusting mode: AreaMode.GRID
 Demand Prediction mode: DemandPredictionMode.TRAINING
-Dispatch mode: Simulation
+Dispatch mode: DispatchMode.RANDOM
 Date: 6/1
 Weekend or Workday: Workday
-Number of Grids: 1
+Number of Grids: 9
 Number of Vehicles: 6000
 Number of Orders: 130
 Number of Reject: 0
-Number of Dispatch: 0
+Number of Dispatch: 161224
+Average Dispatch Cost: 0.0
 Average wait time: 0.0
 Totally Order value: 263
-Totally Update Time : 0:00:00.000609
-Totally NextState Time : 0:00:00.000067
-Totally Learning Time : 0:00:00.000069
-Totally Demand Predict Time : 0:00:00.000643
-Totally Dispatch Time : 0:00:00.000058
-Totally Simulation Time : 0:00:02.335432
-Episode Run time : 0:00:02.337787
+Totally Update Time : 0:00:00.000608
+Totally NextState Time : 0:00:00.000064
+Totally Learning Time : 0:00:00.000062
+Totally Demand Predict Time : 0:00:00.000614
+Totally Dispatch Time : 0:00:00.402556
+Totally Simulation Time : 0:00:00.052443
+Episode Run time : 0:00:00.457505
 """
