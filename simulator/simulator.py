@@ -348,9 +348,10 @@ class Simulation(object):
             vehicle.area = self.node_id_to_area[random_node.id]
             vehicle.area.idle_vehicles.append(vehicle)
 
-    def __load_dispatch_component(self, dispatch_mode: DispatchMode) -> None:
+    def __load_dispatch_component(self, dispatch_mode: DispatchMode) -> DispatchModuleInterface:
         if dispatch_mode == DispatchMode.RANDOM:
-            self.dispatch_module = RandomDispatch()
+            dispatch_module = RandomDispatch()
+        return dispatch_module
 
     def __road_cost(self, start_node_index: int, end_node_index: int) -> int:
         return int(self.__cost_map[start_node_index][end_node_index])
@@ -893,6 +894,9 @@ class Simulation(object):
         Here you can implement your own Dispatch method to
         move idle vehicles in each cluster to other clusters
         """
+        for area in self.areas:
+            for vehicles in area.idle_vehicles:
+                self.dispatch_module()
         return
 
     def __match_function(self) -> None:
