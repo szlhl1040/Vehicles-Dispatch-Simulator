@@ -2,6 +2,7 @@ from abc import abstractmethod
 from datetime import datetime
 from typing import List, Mapping, Tuple
 
+from objects.node import Node
 from objects.order import Order
 from objects.vehicle import Vehicle
 
@@ -9,7 +10,7 @@ class Area:
     def __init__(
         self,
         id,
-        nodes: List[Mapping[int, Tuple[float, float]]],  # node_index: {longitude, latitude}
+        nodes: List[Node],  # node_index: {longitude, latitude}
         neighbor: List['Area'],
         rebalance_number,
         idle_vehicles,
@@ -17,7 +18,7 @@ class Area:
         orders,
     ):
         self.id = id
-        self.nodes = nodes
+        self.nodes: List[Node] = nodes
         self.neighbor: List[Area] = neighbor
         self.rebalance_number = rebalance_number
         self.idle_vehicles: List[Vehicle] = idle_vehicles

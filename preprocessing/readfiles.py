@@ -32,13 +32,13 @@ def read_map(input_file_path: str) -> np.ndarray:
 
     return map_values
 
-def read_cost_map(input_file_path: str) -> pd.DataFrame:
+def read_cost_map(input_file_path: str) -> np.ndarray:
     reader = pd.read_csv(input_file_path,header=None,chunksize = 1000)
     map_list = []
     for chunk in reader:
         map_list.append(chunk)
     map_df: pd.DataFrame = pd.concat(map_list)
-    return map_df
+    return map_df.values
 
 def read_path(input_file_path) -> np.ndarray:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
@@ -115,8 +115,8 @@ def read_all_files(order_file_date: str = "0601") -> Tuple[pd.DataFrame, List[in
     node_id_list = read_node_id_list(node_id_list_path)
     orders = read_order(orders_path)
     vehicles = read_driver(vehicles_path)
-    map_df = read_cost_map(map_path)
-    return node_df, node_id_list, orders, vehicles, map_df
+    cost_map = read_cost_map(map_path)
+    return node_df, node_id_list, orders, vehicles, cost_map
 
 def read_orders_vehicles_files(order_file_date: str = "0601"):
     orders_path = os.path.join(os.getcwd(),"data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
