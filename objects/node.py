@@ -31,6 +31,7 @@ class NodeManager:
             for _, row in node_df.iterrows()
         ]
         self.__node_index = {node.id: idx for idx, node in enumerate(self.__node_list)}
+        self.__node_dict = {node.id: node for node in self.__node_list}
 
     @property
     def node_locations(self) -> np.ndarray:
@@ -50,6 +51,9 @@ class NodeManager:
 
     def get_node_index(self, node_id: int) -> int:
         return self.__node_index[node_id]
+
+    def get_node(self, node_id) -> Node:
+        return self.__node_dict[node_id]
 
     def __len__(self) -> int:
         return len(self.__node_list)
