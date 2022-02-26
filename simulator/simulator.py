@@ -64,7 +64,6 @@ class Simulation(object):
         side_length_meter: int,
         vehicles_server_meter: int,
         neighbor_can_server: bool,
-        focus_on_local_region: bool,
     ):
 
         # Component
@@ -134,7 +133,6 @@ class Simulation(object):
 
         # Control variable
         self.neighbor_can_server = neighbor_can_server
-        self.focus_on_local_region = focus_on_local_region
 
         # Process variable
         self.real_exp_time = None
@@ -225,16 +223,6 @@ class Simulation(object):
             )
             for _, order_row in orders_df.iterrows()
         ]
-        # Limit order generation area
-        # -------------------------------
-        if self.focus_on_local_region == True:
-            print("Remove out-of-bounds Orders")
-            for order in self.orders:
-                if not self.__is_order_in_limit_region(order):
-                    self.orders.remove(order)
-            for i in range(len(self.orders)):
-                self.orders[i].id = i
-        # -------------------------------
 
         # Calculate the value of all orders in advance
         # -------------------------------
@@ -298,7 +286,6 @@ class Simulation(object):
 
         # read orders
         # -----------------------------------------
-        # if self.focus_on_local_region == False:
         order_df = read_order(
             input_file_path=base_data_path
             / TRAIN

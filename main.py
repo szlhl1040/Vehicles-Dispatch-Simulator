@@ -2,7 +2,6 @@ from util import DataModule
 from config.setting import (
     TIMESTEP,
     NELGHBOR_CAN_SERVER,
-    FOCUS_ON_LOCAL_REGION,
     LOCAL_REGION_BOUND,
     VEHICLES_NUMBER,
     SIDE_LENGTH_KIRO_METER,
@@ -24,7 +23,6 @@ if __name__ == "__main__":
         side_length_meter=SIDE_LENGTH_KIRO_METER,
         vehicles_server_meter=VEHICLE_SERVICE_KIRO_METER,
         neighbor_can_server=NELGHBOR_CAN_SERVER,
-        focus_on_local_region=FOCUS_ON_LOCAL_REGION,
     )
 
     date_module = DataModule()
