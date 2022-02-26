@@ -6,7 +6,7 @@ from objects.order import Order
 class Vehicle(object):    
     def __init__(
         self,
-        id,
+        id: int,
         location_node,
         area,
         orders: List[Order],
@@ -18,18 +18,18 @@ class Vehicle(object):
         self.orders: List[Order] = orders                                    #Orders currently on board
         self.delivery_point = delivery_point                      #Next destination of current vehicle
 
-    def arrive_vehicle_update(self, delivery_area):
+    def arrive_vehicle_update(self, delivery_area) -> None:
         self.location_node = self.delivery_point
         self.delivery_point = None
         self.area = delivery_area
         if len(self.orders):
             self.orders.clear()
 
-    def reset(self):
+    def reset(self) -> None:
         self.orders.clear()
         self.delivery_point = None
 
-    def example(self):
+    def example(self) -> None:
         print("Vehicle Example output")
         print("ID:",self.id)
         print("LocationNode:",self.location_node)
