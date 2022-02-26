@@ -1,6 +1,6 @@
 import numpy as np
 
-from domain import AreaMode, DemandPredictionMode, LocalRegionBound
+from domain import AreaMode, DemandPredictionMode, DispatchMode, LocalRegionBound
 
 # Simulater Setting
 # ------------------------------
@@ -29,7 +29,7 @@ VEHICLES_NUMBER = 6000
 SIDE_LENGTH_KIRO_METER = 0.5
 VEHICLE_SERVICE_KIRO_METER = 0.5
 
-DISPATCH_MODE = "Simulation"
+DISPATCH_MODE = DispatchMode.RANDOM
 DEMAND_PREDICTION_MODE = DemandPredictionMode.TRAINING
 # ["TransportationClustering","KmeansClustering","SpectralClustering"]
 AREA_MODE = AreaMode.GRID

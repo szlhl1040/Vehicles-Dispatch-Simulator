@@ -10,8 +10,15 @@ import pandas as pd
 from tqdm import tqdm
 
 from config import MINUTES, PICKUPTIMEWINDOW
-from domain import AreaMode, ArriveInfo, DemandPredictionMode, LocalRegionBound
-from modules import StaticsService
+from domain import (
+    AreaMode,
+    ArriveInfo,
+    DemandPredictionMode,
+    DispatchMode,
+    LocalRegionBound,
+)
+from modules import DispatchModuleInterface, StaticsService
+from modules.dispatch import RandomDispatch
 from objects import Area, Cluster, Grid, NodeManager, Order, Vehicle
 from preprocessing.readfiles import read_all_files, read_map, read_order
 from util import haversine
@@ -48,7 +55,7 @@ class Simulation(object):
         self,
         area_mode: AreaMode,
         demand_prediction_mode: DemandPredictionMode,
-        dispatch_mode: str,
+        dispatch_mode: DispatchMode,
         vehicles_number: int,
         time_periods: np.timedelta64,
         local_region_bound: LocalRegionBound,
@@ -58,7 +65,9 @@ class Simulation(object):
     ):
 
         # Component
-        self.dispatch_module = None
+        self.dispatch_module: DispatchModuleInterface = self.__load_dispatch_component(
+            dispatch_mode=dispatch_mode
+        )
         self.demand_predictor_module = None
         self.node_manager: NodeManager = None
 
@@ -101,7 +110,7 @@ class Simulation(object):
 
         # Input parameters
         self.area_mode: AreaMode = area_mode
-        self.dispatch_mode: str = dispatch_mode
+        self.dispatch_mode: DispatchMode = dispatch_mode
         self.vehicles_number: int = vehicles_number
         self.time_periods: np.timedelta64 = time_periods
         self.side_length_meter: int = side_length_meter
@@ -339,8 +348,9 @@ class Simulation(object):
             vehicle.area = self.node_id_to_area[random_node.id]
             vehicle.area.idle_vehicles.append(vehicle)
 
-    def __load_dispatch_component(self, dispatch_module) -> None:
-        self.dispatch_module = dispatch_module
+    def __load_dispatch_component(self, dispatch_mode: DispatchMode) -> None:
+        if dispatch_mode == DispatchMode.RANDOM:
+            self.dispatch_module = RandomDispatch()
 
     def __road_cost(self, start_node_index: int, end_node_index: int) -> int:
         return int(self.__cost_map[start_node_index][end_node_index])

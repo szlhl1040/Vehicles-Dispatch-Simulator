@@ -7,7 +7,7 @@ from config import (
     SIDE_LENGTH_KIRO_METER,
     TIMESTEP,
     VEHICLE_SERVICE_KIRO_METER,
-    VEHICLES_NUMBER
+    VEHICLES_NUMBER,
 )
 from simulator.simulator import Simulation
 from util import DataModule
