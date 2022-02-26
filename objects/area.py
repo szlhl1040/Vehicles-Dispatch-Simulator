@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from datetime import datetime
-from typing import List, Mapping, Tuple
+from typing import List, Mapping
 
 from objects.node import Node
 from objects.order import Order

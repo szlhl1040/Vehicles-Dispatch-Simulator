@@ -9,21 +9,11 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from config.setting import MINUTES, PICKUPTIMEWINDOW
-from domain.area_mode import AreaMode
-from domain.arrive_info import ArriveInfo
-from domain.demand_prediction_mode import DemandPredictionMode
-from objects.node import NodeManager
-from modules.statics import StaticsService
-from domain.local_region_bound import LocalRegionBound
-from objects.objects import Area, Cluster, Grid, Order, Vehicle
-from preprocessing.readfiles import (
-    read_all_files,
-    read_map,
-    read_order,
-    read_reset_order,
-    string_pd_timestamp,
-)
+from config import MINUTES, PICKUPTIMEWINDOW
+from domain import AreaMode, ArriveInfo, DemandPredictionMode, LocalRegionBound
+from modules import StaticsService
+from objects import Area, Cluster, Grid, NodeManager, Order, Vehicle
+from preprocessing.readfiles import read_all_files, read_map, read_order
 from util import haversine
 
 ###########################################################################
@@ -1185,20 +1175,38 @@ class Simulation(object):
         if (self.static_service.dispatch_num) != 0:
             print(
                 "Average Dispatch Cost: "
-                + str(self.static_service.totally_dispatch_cost / self.static_service.dispatch_num)
+                + str(
+                    self.static_service.totally_dispatch_cost
+                    / self.static_service.dispatch_num
+                )
             )
         if (len(self.orders) - self.static_service.reject_num) != 0:
             print(
                 "Average wait time: "
-                + str(self.static_service.totally_wait_time / (len(self.orders) - self.static_service.reject_num))
+                + str(
+                    self.static_service.totally_wait_time
+                    / (len(self.orders) - self.static_service.reject_num)
+                )
             )
         print("Totally Order value: " + str(sum_order_value))
         print("Totally Update Time : " + str(self.static_service.totally_update_time))
-        print("Totally NextState Time : " + str(self.static_service.totally_next_state_time))
-        print("Totally Learning Time : " + str(self.static_service.totally_learning_time))
-        print("Totally Demand Predict Time : " + str(self.static_service.totally_demand_predict_time))
-        print("Totally Dispatch Time : " + str(self.static_service.totally_dispatch_time))
-        print("Totally Simulation Time : " + str(self.static_service.totally_match_time))
+        print(
+            "Totally NextState Time : "
+            + str(self.static_service.totally_next_state_time)
+        )
+        print(
+            "Totally Learning Time : " + str(self.static_service.totally_learning_time)
+        )
+        print(
+            "Totally Demand Predict Time : "
+            + str(self.static_service.totally_demand_predict_time)
+        )
+        print(
+            "Totally Dispatch Time : " + str(self.static_service.totally_dispatch_time)
+        )
+        print(
+            "Totally Simulation Time : " + str(self.static_service.totally_match_time)
+        )
         print("Episode Run time : " + str(episode_end_time - episode_start_time))
 
 

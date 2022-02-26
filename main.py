@@ -1,16 +1,16 @@
-from util import DataModule
-from config.setting import (
-    TIMESTEP,
-    NELGHBOR_CAN_SERVER,
-    LOCAL_REGION_BOUND,
-    VEHICLES_NUMBER,
-    SIDE_LENGTH_KIRO_METER,
-    VEHICLE_SERVICE_KIRO_METER,
-    DISPATCH_MODE,
-    DEMAND_PREDICTION_MODE,
+from config import (
     AREA_MODE,
+    DEMAND_PREDICTION_MODE,
+    DISPATCH_MODE,
+    LOCAL_REGION_BOUND,
+    NELGHBOR_CAN_SERVER,
+    SIDE_LENGTH_KIRO_METER,
+    TIMESTEP,
+    VEHICLE_SERVICE_KIRO_METER,
+    VEHICLES_NUMBER
 )
 from simulator.simulator import Simulation
+from util import DataModule
 
 if __name__ == "__main__":
     simulator = Simulation(

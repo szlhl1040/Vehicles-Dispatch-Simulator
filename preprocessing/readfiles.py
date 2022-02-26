@@ -1,10 +1,10 @@
+import datetime as dt
 import os
-import sys
-from typing import Tuple, List
+from datetime import datetime
+from typing import List, Tuple
+
 import numpy as np
 import pandas as pd
-import datetime as dt
-from datetime import datetime
 
 
 def timestamp_datetime(value) -> datetime:

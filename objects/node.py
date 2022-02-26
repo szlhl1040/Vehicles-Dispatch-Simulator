@@ -3,8 +3,6 @@ from typing import Any, List
 import numpy as np
 import pandas as pd
 
-from domain.local_region_bound import LocalRegionBound
-
 
 class Node:
     def __init__(self, id: int, longitude: float, latitude: float):
