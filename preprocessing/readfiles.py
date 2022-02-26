@@ -70,7 +70,7 @@ def read_node_id_list(input_file_path) -> List[int]:
             node_id_list.append(odom)
     return node_id_list
 
-def read_order(input_file_path) -> np.ndarray:
+def read_order(input_file_path) -> pd.DataFrame:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
     order_list = []
     for chunk in reader:
@@ -81,9 +81,8 @@ def read_order(input_file_path) -> np.ndarray:
     order_df = order_df.sort_values(by = "Start_time")
     order_df["ID"] = range(0,order_df.shape[0])
     order_df = order_df[["ID", "Start_time", "NodeS", "NodeE"]]
-    order_values = order_df.values
 
-    return order_values
+    return order_df
 
 def read_reset_order(input_file_path) -> np.ndarray:
     reader = pd.read_csv(input_file_path,chunksize = 1000)
@@ -105,7 +104,7 @@ def read_driver(input_file_path="./data/Drivers0601.csv") -> np.ndarray:
     driver_values = driver_df.values
     return driver_values
 
-def read_all_files(order_file_date: str = "0601") -> Tuple[pd.DataFrame, List[int], np.ndarray, np.ndarray, pd.DataFrame]:
+def read_all_files(order_file_date: str = "0601") -> Tuple[pd.DataFrame, List[int], pd.DataFrame, np.ndarray, pd.DataFrame]:
     node_path = os.path.join(os.getcwd(),"data","Node.csv")
     node_id_list_path = os.path.join(os.getcwd(),"data","NodeIDList.txt")
     orders_path = os.path.join(os.getcwd(), "data", "Order", "modified", "train", "order_2016" + order_file_date + ".csv")
