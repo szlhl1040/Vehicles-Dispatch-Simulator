@@ -1,6 +1,6 @@
 # Vehicles-Dispatch-Simulator
 This simulator serves as the training and evaluation platform in the following work:  
-[Context-Aware Taxi Dispatching at City-Scale Using Deep Reinforcement Learning](http://liuzhidan.github.io/pdf/2020-TITS-COX.pdf)  
+[Context-Aware Taxi Dispatching at City-Scale Using Deep Reinforcement Learning]([http://liuzhidan.github.io/pdf/2020-TITS-COX.pdf](https://liuzhidan.github.io/files/2022-TITS-COX.pdf))  
 
 ## Introduction
 This simulator is used to simulate urban vehicle traffic.  
